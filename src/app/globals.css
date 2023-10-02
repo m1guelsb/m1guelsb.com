@@ -3,25 +3,42 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+  font-size: 16px;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #080313;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #936dff;
+  border-radius: 0.25rem;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: #8459ff;
+}
+
+h1 {
+  line-height: 4.5rem;
+  font-weight: 700;
+  font-size: 3rem;
+}
+h2 {
+  line-height: 2.5rem;
+  font-weight: 700;
+  font-size: 1.75rem;
+}
+h3 {
+  line-height: 2.25rem;
+  font-weight: 500;
+  font-size: 1.5rem;
 }
