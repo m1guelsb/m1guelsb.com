@@ -16,6 +16,14 @@ const config: Config = {
       background1: "#080313",
       background2: "#140B27",
     },
+    fontSize: {
+      "3xl": "3rem",
+      "2xl": "1.75rem",
+      xl: "1.5rem",
+      lg: "1.25rem",
+      md: "1rem",
+      sm: "0.875rem",
+    },
     screens: {
       sm: "640px",
       md: "768px",
