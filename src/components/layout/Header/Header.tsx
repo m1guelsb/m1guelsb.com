@@ -11,6 +11,7 @@ export const Header = () => {
     >
       <Link href={"/"} className="flex items-center">
         <Image
+          priority
           style={{ userSelect: "none" }}
           draggable={false}
           src={Logo}

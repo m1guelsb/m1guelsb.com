@@ -6,6 +6,7 @@ export const Footer = () => {
     <footer className="h-[7.5rem] w-full flex items-center justify-between">
       <p>2023 - present | Miguel Barbosa</p>
       <Image
+        priority
         style={{ userSelect: "none" }}
         draggable={false}
         src={Logo}
