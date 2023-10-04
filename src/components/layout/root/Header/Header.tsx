@@ -10,14 +10,16 @@ export const Header = () => {
       className="h-[7.5rem] w-full flex justify-between"
     >
       <Link href={"/"} className="flex items-center">
-        <Image
-          priority
-          style={{ userSelect: "none" }}
-          draggable={false}
-          src={Logo}
-          alt="m1guelsb-logo"
-          height={40}
-        />
+        <button>
+          <Image
+            priority
+            style={{ userSelect: "none" }}
+            draggable={false}
+            src={Logo}
+            alt="m1guelsb-logo"
+            height={40}
+          />
+        </button>
       </Link>
 
       <Nav />

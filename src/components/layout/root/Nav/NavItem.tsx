@@ -16,21 +16,18 @@ export const NavItem = ({ title, href, className, ...props }: NavItemProps) => {
 
   return (
     <Link role="link" href={href}>
-      <span
+      <button
         {...props}
-        className={navItemVariants()}
-        style={{
-          color: pathname === href ? "#936DFF" : "#ffffff",
-        }}
+        className={navItemVariants({ isActive: pathname === href })}
       >
         {title}
-      </span>
+      </button>
     </Link>
   );
 };
 
 const navItemVariants = cva(
-  ["text-text1", "hover:text-accent", "transition", "text-lg"],
+  ["hover:text-accent", "focus-within:text-accent", "transition", "text-lg"],
   {
     variants: {
       isActive: {
