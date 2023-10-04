@@ -18,12 +18,7 @@ const buttonVariants = cva(
         primary: ["bg-accent", "text-text1", "hover:bg-accent/90"],
         secondary: ["bg-background2", "text-text2", "hover:bg-accent/10"],
         link: ["bg-transparent", "text-text2", "hover:underline"],
-        outline: [
-          "bg-transparent",
-          "border",
-          "border-accent",
-          "hover:bg-accent/10",
-        ],
+        outline: ["bg-transparent", "border", "border-accent"],
       },
       size: {
         small: ["text-sm", "py-[0.25rem]", "px-[0.5rem]"],
