@@ -14,7 +14,7 @@ export const ArticleCard = ({ title, brief, categories }: ArticleCardProps) => {
     <Link
       href={`/blog/${hrefTitle}`}
       role="link"
-      className="transition hover:-translate-y-1 focus-within:-translate-y-1"
+      className="transition hover:-translate-y-1 focus-within:-translate-y-1 animate-fadeIn"
     >
       <div
         role="listitem"

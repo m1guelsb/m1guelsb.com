@@ -30,6 +30,21 @@ const config: Config = {
       lg: "1024px",
       xl: "1280px",
     },
+
+    extend: {
+      keyframes: {
+        fadeIn: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+        },
+      },
+      animation: {
+        fadeIn: "fadeIn .3s ease-in-out",
+      },
+    },
   },
 };
 export default config;

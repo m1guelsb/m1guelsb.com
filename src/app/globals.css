@@ -15,30 +15,30 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  background: #080313;
+  @apply bg-background2;
 }
 
 body::-webkit-scrollbar-thumb {
-  background: #936dff;
+  @apply bg-accent;
   border-radius: 0.25rem;
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background: #8459ff;
+  @apply bg-accent2;
 }
 
 h1 {
   line-height: 4.5rem;
   font-weight: 700;
-  font-size: 3rem;
+  @apply text-3xl;
 }
 h2 {
   line-height: 2.5rem;
   font-weight: 700;
-  font-size: 1.75rem;
+  @apply text-2xl;
 }
 h3 {
   line-height: 2rem;
   font-weight: 500;
-  font-size: 1.5rem;
+  @apply text-xl;
 }
