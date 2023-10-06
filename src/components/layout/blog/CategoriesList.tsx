@@ -1,15 +1,30 @@
+"use client";
+
 import { Button } from "@/components/ui";
 import { Category } from "@/types";
+import { createUrl } from "@/utils/functions";
+import { useSearchParams, useRouter } from "next/navigation";
 
-async function getCategories() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
-    cache: "no-cache",
-  });
-  return res.json();
+interface CategoriesListProps {
+  categoriesData: Category[];
 }
 
-export const CategoriesList = async () => {
-  const categoriesData: Category[] = await getCategories();
+export const CategoriesList = ({ categoriesData }: CategoriesListProps) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const handleFilterByCategory = (category: string) => {
+    const categoryParam = category.toLowerCase();
+    const newParams = new URLSearchParams(searchParams.toString());
+
+    if (category) {
+      newParams.set("categories", categoryParam);
+    } else {
+      newParams.delete("categories");
+    }
+
+    router.push(createUrl("/blog", newParams));
+  };
 
   return (
     <div>
@@ -23,7 +38,12 @@ export const CategoriesList = async () => {
                   "transition hover:-translate-y-1 focus-within:-translate-y-1"
                 }
               >
-                <Button variant={"secondary"}>{title}</Button>
+                <Button
+                  onClick={() => handleFilterByCategory(title)}
+                  variant={"secondary"}
+                >
+                  {title}
+                </Button>
               </div>
             );
           })}

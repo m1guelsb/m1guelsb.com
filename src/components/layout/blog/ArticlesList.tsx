@@ -1,17 +1,10 @@
 import { ArticleCard } from "@/components/ui";
 import { Article, PaginationResponse } from "@/types";
 
-async function getArticles() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/articles?size=20`,
-    { cache: "no-cache" }
-  );
-  return res.json();
+interface ArticlesListProps {
+  articlesData: PaginationResponse<Article>;
 }
-
-export const ArticlesList = async () => {
-  const articlesData: PaginationResponse<Article> = await getArticles();
-
+export const ArticlesList = ({ articlesData }: ArticlesListProps) => {
   return (
     <div className="flex flex-col gap-[1rem]">
       <div className="flex justify-between items-center">
