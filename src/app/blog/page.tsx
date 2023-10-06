@@ -37,7 +37,9 @@ async function getCategories() {
 
 async function getArticles({ categories }: { [key: string]: string }) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/articles?categories=${categories}&size=20`,
+    `${process.env.NEXT_PUBLIC_API_URL}/articles?categories=${
+      categories || ""
+    }&size=20`,
     { cache: "no-cache" }
   );
   return res.json();

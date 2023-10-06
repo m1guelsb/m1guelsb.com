@@ -10,20 +10,30 @@ interface CategoriesListProps {
 }
 
 export const CategoriesList = ({ categoriesData }: CategoriesListProps) => {
-  const searchParams = useSearchParams();
+  const searchParamsHook = useSearchParams();
   const router = useRouter();
 
   const handleFilterByCategory = (category: string) => {
-    const categoryParam = category.toLowerCase();
-    const newParams = new URLSearchParams(searchParams.toString());
+    const paramName = "categories";
+    const paramValue = category;
+    const searchParams = new URLSearchParams(searchParamsHook.toString());
 
-    if (category) {
-      newParams.set("categories", categoryParam);
+    const currentValues = (searchParams.get(paramName) ?? "").split(",");
+    const existsIndex = currentValues.indexOf(paramValue);
+
+    if (existsIndex === -1) {
+      currentValues.push(paramValue);
     } else {
-      newParams.delete("categories");
+      currentValues.splice(existsIndex, 1);
     }
 
-    router.push(createUrl("/blog", newParams));
+    if (currentValues.length === 0) {
+      searchParams.delete(paramName);
+    } else {
+      searchParams.set(paramName, currentValues.join(","));
+    }
+
+    router.push(createUrl("/blog", searchParams));
   };
 
   return (
@@ -32,19 +42,17 @@ export const CategoriesList = ({ categoriesData }: CategoriesListProps) => {
         <div className="flex flex-wrap gap-[1rem]">
           {categoriesData?.map(({ id, title }) => {
             return (
-              <div
+              <Button
                 key={id}
-                className={
-                  "transition hover:-translate-y-1 focus-within:-translate-y-1"
+                onClick={() => handleFilterByCategory(title)}
+                variant={
+                  searchParamsHook.get("categories")?.split(",").includes(title)
+                    ? "primary"
+                    : "secondary"
                 }
               >
-                <Button
-                  onClick={() => handleFilterByCategory(title)}
-                  variant={"secondary"}
-                >
-                  {title}
-                </Button>
-              </div>
+                {title}
+              </Button>
             );
           })}
         </div>
