@@ -14,7 +14,9 @@ export const HeroSection = () => {
           <h1>
             Eu sou <b className="text-accent">Miguel</b> {":)"}
           </h1>
-          <h3>Desenvolvedor Fullstack e Designer nas horas vagas.</h3>
+          <p className="text-lg">
+            Desenvolvedor Fullstack e Designer nas horas vagas.
+          </p>
         </div>
         <div className="flex gap-[1rem]">
           <Link href={"https://www.github.com/m1guelsb"} target="_blank">

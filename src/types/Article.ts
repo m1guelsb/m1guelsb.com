@@ -7,6 +7,8 @@ export type Article = {
   body: string;
   brief: string;
   categories: Category[];
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export const articleSchema: z.ZodType<Article> = z.lazy(() =>

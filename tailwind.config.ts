@@ -17,7 +17,7 @@ const config: Config = {
       background2: "#140B27",
     },
     fontSize: {
-      "3xl": "3rem",
+      "3xl": "2.5rem",
       "2xl": "1.75rem",
       xl: "1.5rem",
       lg: "1.25rem",

@@ -42,3 +42,20 @@ h3 {
   font-weight: 500;
   @apply text-xl;
 }
+
+code {
+  @apply bg-background2;
+  border-radius: 0.3rem;
+  padding: 4px 5px 5px;
+  white-space: nowrap;
+}
+
+pre code {
+  white-space: inherit;
+}
+
+pre {
+  @apply bg-background2;
+  padding: 5px;
+  border-radius: 0.3rem;
+}
