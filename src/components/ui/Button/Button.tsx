@@ -21,8 +21,8 @@ const buttonVariants = cva(
         outline: ["bg-transparent", "border", "border-accent"],
       },
       size: {
-        small: ["text-sm", "py-[0.25rem]", "px-[0.5rem]"],
-        medium: ["text-base", "py-[0.5rem]", "px-[1rem]"],
+        small: ["text-sm", "h-[2rem]", "px-[0.5rem]"],
+        medium: ["text-base", "h-[2.5rem]", "px-[1rem]"],
         large: ["text-lg", "h-[3.5rem]", "px-[1.5rem]"],
         icon: ["h-[3.5rem]", "w-[3.5rem]"],
       },

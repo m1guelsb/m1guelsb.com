@@ -27,6 +27,27 @@ body::-webkit-scrollbar-thumb:hover {
   @apply bg-accent2;
 }
 
+textarea,
+ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+textarea,
+ul::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+textarea,
+ul::-webkit-scrollbar-thumb {
+  @apply bg-accent;
+  border-radius: 0.25rem;
+}
+
+textarea,
+ul::-webkit-scrollbar-thumb:hover {
+  @apply bg-accent2;
+}
+
 h1 {
   line-height: 4.5rem;
   font-weight: 700;

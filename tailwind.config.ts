@@ -15,6 +15,7 @@ const config: Config = {
       text2: "#99A2FF",
       background1: "#080313",
       background2: "#140B27",
+      danger: "#e7253d",
     },
     fontSize: {
       "3xl": "2.5rem",
