@@ -32,7 +32,7 @@ export const ArticleForm = () => {
   ];
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
         <div className="grid grid-cols-2 gap-[2rem]">
           <Input
             placeholder="Title"
@@ -60,7 +60,9 @@ export const ArticleForm = () => {
           <TextArea {...register("body")} errorMessage={errors.body?.message} />
         </div>
 
-        <Button type="submit">Post article</Button>
+        <Button className="self-end" type="submit">
+          Post article
+        </Button>
       </form>
     </>
   );

@@ -1,4 +1,3 @@
-import "@/styles/article/quill.snow.css";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Article, PaginationResponse } from "@/types";
