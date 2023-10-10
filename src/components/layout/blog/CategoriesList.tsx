@@ -1,40 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui";
+import { useQueryParams } from "@/hooks";
 import { Category } from "@/types";
-import { createUrl } from "@/utils/functions";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 interface CategoriesListProps {
   categoriesData: Category[];
 }
 
 export const CategoriesList = ({ categoriesData }: CategoriesListProps) => {
+  const { handleParamValue } = useQueryParams({ paramName: "categories" });
   const searchParamsHook = useSearchParams();
-  const router = useRouter();
-
-  const handleFilterByCategory = (category: string) => {
-    const paramName = "categories";
-    const paramValue = category;
-    const searchParams = new URLSearchParams(searchParamsHook.toString());
-
-    const currentValues = (searchParams.get(paramName) ?? "").split(",");
-    const existsIndex = currentValues.indexOf(paramValue);
-
-    if (existsIndex === -1) {
-      currentValues.push(paramValue);
-    } else {
-      currentValues.splice(existsIndex, 1);
-    }
-
-    if (currentValues.length === 0) {
-      searchParams.delete(paramName);
-    } else {
-      searchParams.set(paramName, currentValues.join(","));
-    }
-
-    router.push(createUrl("/blog", searchParams));
-  };
 
   return (
     <div>
@@ -44,7 +21,7 @@ export const CategoriesList = ({ categoriesData }: CategoriesListProps) => {
             return (
               <Button
                 key={id}
-                onClick={() => handleFilterByCategory(title)}
+                onClick={() => handleParamValue(title)}
                 variant={
                   searchParamsHook.get("categories")?.split(",").includes(title)
                     ? "primary"
