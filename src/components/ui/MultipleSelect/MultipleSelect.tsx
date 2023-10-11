@@ -2,25 +2,28 @@
 
 import { cx } from "class-variance-authority";
 import { useMultipleSelection, useSelect } from "downshift";
-import { buttonVariants } from "..";
-import { PlusIcon } from "@radix-ui/react-icons";
+import { ErrorMessage, buttonVariants } from "..";
+import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
+import { ComponentProps } from "react";
 
-interface Item {
-  id: string;
+export interface Item {
+  id: number;
   label: string;
 }
 
-interface MultipleSelectProps {
+interface MultipleSelectProps extends ComponentProps<"div"> {
   placeholder: string;
   itemsList: Item[];
-  value?: Item[];
-  onValueChange?: (value: Item[]) => void;
+  onValueChange?: (value: Item[] | undefined) => void;
+  errorMessage?: string;
 }
 
 export const MultipleSelect = ({
   itemsList,
   placeholder,
   onValueChange,
+  errorMessage,
+  ...props
 }: MultipleSelectProps) => {
   const {
     getSelectedItemProps,
@@ -28,9 +31,9 @@ export const MultipleSelect = ({
     addSelectedItem,
     removeSelectedItem,
     selectedItems,
-  } = useMultipleSelection<Item>();
-
-  onValueChange?.(selectedItems);
+  } = useMultipleSelection<Item>({
+    onStateChange: ({ selectedItems }) => onValueChange?.(selectedItems),
+  });
 
   const items = itemsList.filter(itemListFilter(selectedItems));
   const {
@@ -76,12 +79,12 @@ export const MultipleSelect = ({
   });
 
   return (
-    <div className="w-full">
+    <div className="w-full" {...props}>
       <div className="flex flex-col gap-1">
-        <label className="w-fit" {...getLabelProps()}>
+        <label className="w-fit text-lg" {...getLabelProps()}>
           {placeholder}
         </label>
-        <div className="shadow-sm bg-white inline-flex gap-2 items-center flex-wrap  rounded-md focus-within:border-gray-400">
+        <div className="shadow-sm inline-flex gap-2 items-center flex-wrap  rounded-md focus-within:border-gray-400">
           {selectedItems.map((item, index) => {
             return (
               <span
@@ -98,13 +101,15 @@ export const MultipleSelect = ({
                 {item.label}
 
                 <span
-                  className="px-1 cursor-pointer"
+                  className="px-1 cursor-pointer flex items-center"
                   onClick={(e) => {
                     e.stopPropagation();
                     removeSelectedItem(item);
                   }}
                 >
-                  &#10005;
+                  <button type="button">
+                    <Cross1Icon className="hover:text-accent focus:text-accent" />
+                  </button>
                 </span>
               </span>
             );
@@ -136,13 +141,9 @@ export const MultipleSelect = ({
           items.map((item, index) => (
             <li
               className={cx(
-                highlightedIndex === index && "bg-blue-300",
+                highlightedIndex === index && "bg-background3",
                 selectedItem === item && "font-bold",
-                "py-2 px-3 shadow-sm flex flex-col cursor-pointer",
-                buttonVariants({
-                  size: "medium",
-                  variant: "secondary",
-                })
+                "py-2 px-3 shadow-sm flex flex-col cursor-pointer rounded-md"
               )}
               key={`${item.id}${index}`}
               {...getItemProps({ item, index })}
@@ -151,12 +152,10 @@ export const MultipleSelect = ({
             </li>
           ))}
       </ul>
+      <ErrorMessage message={errorMessage} />
     </div>
   );
 };
 
-function itemListFilter(selectedItems: Item[]) {
-  return function itemsFilter(item: Item) {
-    return selectedItems.indexOf(item) < 0;
-  };
-}
+const itemListFilter = (selectedItems: Item[]) => (item: Item) =>
+  selectedItems.indexOf(item) < 0;
