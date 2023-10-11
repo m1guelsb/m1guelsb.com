@@ -1,44 +1,47 @@
 "use client";
-
-import { Button, Input, MultipleSelect, TextArea } from "@/components/ui";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Article, articleSchema } from "@/types/Article";
+import { Button, Input, MultipleSelect, TiptapEditor } from "@/components/ui";
+import { useEffect, useState } from "react";
+import { Category } from "@/types";
+import { api } from "@/services/axios";
+
 export const ArticleForm = () => {
   const {
     register,
     handleSubmit,
     control,
-    watch,
     formState: { errors },
   } = useForm<Article>({ resolver: zodResolver(articleSchema) });
-  const onSubmit: SubmitHandler<Article> = (data) => console.log(data);
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  console.log("watch :>> ", watch("categories"));
+  useEffect(() => {
+    api.get<Category[]>("/categories").then((res) => setCategories(res.data));
+  }, []);
 
-  const itemsList = [
-    { id: "book-1", label: "Harper Lee" },
-    { id: "book-2", label: "Lev Tolstoy" },
-    { id: "book-4", label: "Oscar Wilde" },
-    { id: "book-5", label: "George Orwell" },
-    { id: "book-6", label: "Jane Austen" },
-    { id: "book-7", label: "Marcus Aurelius" },
-    {
-      id: "book-8",
-      label: "Fyodor Dostoevsky",
-    },
-    { id: "book-9", label: "Lev Tolstoy" },
-    { id: "book-10", label: "Fyodor Dostoevsky" },
-  ];
+  const onSubmit: SubmitHandler<Article> = async (data) => {
+    const payload = {
+      ...data,
+      categoryIds: data.categories.map((cat) => cat.id),
+    };
+
+    api.post("/articles", payload);
+  };
+
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-        <div className="grid grid-cols-2 gap-[2rem]">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-[2rem] px-[3rem]"
+      >
+        <div className="grid grid-cols-2 gap-[3rem]">
           <Input
             placeholder="Title"
             {...register("title")}
             errorMessage={errors.title?.message}
           />
+
           <Input
             placeholder="Brief"
             {...register("brief")}
@@ -48,19 +51,41 @@ export const ArticleForm = () => {
           <Controller
             name="categories"
             control={control}
-            render={({ field: { value, onChange } }) => (
-              <MultipleSelect
-                placeholder="Select categories"
-                itemsList={itemsList}
-                onValueChange={(value) => onChange(value)}
-              />
+            render={({ field: { onChange } }) => (
+              <span className="col-start-1 col-end-3">
+                <MultipleSelect
+                  placeholder="Categories:"
+                  errorMessage={errors.categories?.message}
+                  itemsList={categories.map(({ id, title }) => {
+                    return {
+                      id: id!,
+                      label: title,
+                    };
+                  })}
+                  onValueChange={(values) =>
+                    onChange(
+                      values?.map(({ id, label }) => {
+                        return { id, title: label };
+                      })
+                    )
+                  }
+                />
+              </span>
             )}
           />
 
-          <TextArea {...register("body")} errorMessage={errors.body?.message} />
+          <Controller
+            name="body"
+            control={control}
+            render={({ field: { onChange } }) => (
+              <span className="w-full col-start-1 col-end-3">
+                <TiptapEditor onChange={onChange} />
+              </span>
+            )}
+          />
         </div>
 
-        <Button className="self-end" type="submit">
+        <Button className="self-center" type="submit">
           Post article
         </Button>
       </form>

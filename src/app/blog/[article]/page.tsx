@@ -2,10 +2,9 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Article, PaginationResponse } from "@/types";
 import { parseTitleHref } from "@/utils/functions";
-import { Interweave } from "interweave";
-import { polyfill } from "interweave-ssr";
 import { ArticleHero } from "@/components/layout/article";
-polyfill();
+import { Summary } from "@/components/ui";
+import { ArticleBody } from "@/components/ui/ArticleBody/ArticleBody";
 
 export default async function ArticlePage({
   params,
@@ -18,7 +17,11 @@ export default async function ArticlePage({
     <section className="flex flex-col gap-[5rem]">
       <ArticleHero article={article} />
 
-      <Interweave tagName="article" content={article.body} />
+      <div className="grid grid-cols-[1fr_20rem] gap-[4rem]">
+        <ArticleBody body={article.body} />
+
+        <Summary articleBody={article.body} />
+      </div>
     </section>
   );
 }
