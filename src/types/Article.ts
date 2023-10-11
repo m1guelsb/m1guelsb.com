@@ -14,9 +14,13 @@ export type Article = {
 export const articleSchema: z.ZodType<Article> = z.lazy(() =>
   z.object({
     id: z.number().optional(),
-    title: z.string({ required_error: "title is required" }),
-    body: z.string({ required_error: "body is required" }),
-    brief: z.string({ required_error: "summary is required" }),
-    categories: z.array(categorySchema),
+    title: z.string().nonempty({ message: "title is required" }),
+    body: z.string().nonempty({ message: "body is required" }),
+    brief: z.string().nonempty({ message: "brief is required" }),
+    categories: z
+      .array(categorySchema, {
+        required_error: "should have at least 1 category",
+      })
+      .nonempty({ message: "should have at least 1 category" }),
   })
 );
