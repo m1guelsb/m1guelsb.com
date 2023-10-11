@@ -1,18 +1,17 @@
-import * as React from "react";
-
+import { ComponentProps, forwardRef } from "react";
 import { VariantProps, cva } from "class-variance-authority";
 import { ErrorMessage } from "..";
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement>,
+  extends ComponentProps<"input">,
     VariantProps<typeof inputVariants> {
   errorMessage?: string;
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ variant, className, errorMessage, ...props }, ref) => {
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ variant, className, errorMessage, style, ...props }, ref) => {
     return (
-      <div>
+      <div style={style}>
         <input
           className={inputVariants({ variant, className })}
           ref={ref}

@@ -1,15 +1,14 @@
-import * as React from "react";
-
+import { ComponentProps, forwardRef } from "react";
 import { VariantProps, cva } from "class-variance-authority";
 import { ErrorMessage } from "..";
 
 export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  extends ComponentProps<"textarea">,
     VariantProps<typeof TextareaVariants> {
   errorMessage?: string;
 }
 
-const TextArea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, errorMessage, ...props }, ref) => {
     return (
       <div>
@@ -23,8 +22,8 @@ const TextArea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     );
   }
 );
-TextArea.displayName = "TextArea";
-export { TextArea };
+Textarea.displayName = "Textarea";
+export { Textarea };
 
 const TextareaVariants = cva([
   "bg-background2",
