@@ -55,10 +55,12 @@
 
 @layer components {
   .article-body {
-    @apply prose prose-slate prose-invert prose-purple prose-pre:border prose-pre:border-slate-500;
+    @apply prose prose-slate prose-invert prose-purple;
 
     @apply prose-h2:text-attention prose-a:text-attention prose-quoteless;
 
-    @apply prose-code:bg-[#040109] prose-code:py-1 prose-code:rounded-md;
+    @apply prose-pre:p-0.5 prose-pre:border prose-pre:border-slate-500 prose-pre:rounded-lg;
+
+    @apply prose-code:bg-[#040109] prose-code:border prose-code:border-slate-800 prose-code:py-1 prose-code:rounded-md;
   }
 }
