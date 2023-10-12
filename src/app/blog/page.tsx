@@ -13,26 +13,28 @@ export default async function Blog({
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const categories = searchParams as { [key: string]: string };
+  const categoriesParams = searchParams as { [key: string]: string };
 
-  const categoriesData: Category[] = await getCategories();
-  const articlesData: PaginationResponse<Article> = await getArticles(
-    categories
-  );
+  const categoriesData = getCategories();
+  const articlesData = getArticles(categoriesParams);
+
+  const [categories, articles] = await Promise.all([
+    categoriesData,
+    articlesData,
+  ]);
 
   return (
     <section className="flex flex-col gap-[2rem]">
-      <CategoriesList categoriesData={categoriesData} />
-      <ArticlesList articlesData={articlesData} />
+      <CategoriesList categoriesData={categories} />
+      <ArticlesList articlesData={articles} />
     </section>
   );
 }
 
 async function getCategories() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
-    cache: "default",
-  });
-  return res.json();
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
+  const categories: Category[] = await res.json();
+  return categories;
 }
 
 async function getArticles({ categories }: { [key: string]: string }) {
@@ -40,7 +42,12 @@ async function getArticles({ categories }: { [key: string]: string }) {
     `${process.env.NEXT_PUBLIC_API_URL}/articles?categories=${
       categories || ""
     }&size=20`,
-    { cache: "no-cache" }
+    {
+      next: {
+        revalidate: 43200, //12h
+      },
+    }
   );
-  return res.json();
+  const articles: PaginationResponse<Article> = await res.json();
+  return articles;
 }

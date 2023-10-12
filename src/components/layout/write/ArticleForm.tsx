@@ -6,6 +6,7 @@ import { Button, Input, MultipleSelect, TiptapEditor } from "@/components/ui";
 import { useEffect, useState } from "react";
 import { Category } from "@/types";
 import { api } from "@/services/axios";
+import { useRouter } from "next/navigation";
 
 export const ArticleForm = () => {
   const {
@@ -15,6 +16,8 @@ export const ArticleForm = () => {
     formState: { errors },
   } = useForm<Article>({ resolver: zodResolver(articleSchema) });
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { push } = useRouter();
 
   useEffect(() => {
     api.get<Category[]>("/categories").then((res) => setCategories(res.data));
@@ -26,7 +29,15 @@ export const ArticleForm = () => {
       categoryIds: data.categories.map((cat) => cat.id),
     };
 
-    api.post("/articles", payload);
+    try {
+      setIsLoading(true);
+      await api.post("/articles", payload);
+      push("/blog");
+    } catch (err: any) {
+      window.alert(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -85,7 +96,7 @@ export const ArticleForm = () => {
           />
         </div>
 
-        <Button className="self-center" type="submit">
+        <Button className="self-center" disabled={isLoading} type="submit">
           Post article
         </Button>
       </form>
