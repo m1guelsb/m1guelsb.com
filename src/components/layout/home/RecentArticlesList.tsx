@@ -8,7 +8,7 @@ async function getRecentArticles() {
     `${process.env.NEXT_PUBLIC_API_URL}/articles?size=4&sort=desc`,
     {
       next: {
-        revalidate: 43200, //12h
+        revalidate: 3600, //1h
       },
     }
   );
@@ -22,7 +22,7 @@ export const RecentArticlesList = async () => {
   return (
     <div className="flex flex-col gap-[1rem]" aria-label="recent-articles">
       <div className="flex justify-between">
-        <h2>Últimos artigos</h2>
+        <h2 className="text-lg laptop:text-xl">Últimos artigos</h2>
         <Link href={"/blog"}>
           <Button variant={"secondary"}>
             Ver todos <ChevronRightIcon />
@@ -30,7 +30,10 @@ export const RecentArticlesList = async () => {
         </Link>
       </div>
 
-      <div role="list" className="grid grid-cols-2 gap-[1rem]">
+      <div
+        role="list"
+        className="grid grid-cols-1 tablet:grid-cols-2 gap-[1rem]"
+      >
         {articlesData?.content.map((article) => (
           <ArticleCard key={article.id} {...article} />
         ))}

@@ -10,7 +10,7 @@ export const ArticlesList = ({ articlesData }: ArticlesListProps) => {
   return (
     <div className="flex flex-col gap-[1rem]">
       <div className="flex justify-between items-center">
-        <h3>Artigos</h3>
+        <h2 className="text-lg laptop:text-xl">Artigos</h2>
         <span className="text-text2">
           {articlesData?.totalElements} artigos
         </span>

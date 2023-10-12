@@ -5,10 +5,7 @@ import Link from "next/link";
 
 export const Header = () => {
   return (
-    <header
-      aria-label="header"
-      className="h-[7.5rem] w-full flex justify-between"
-    >
+    <header aria-label="header" className="h-24 w-full flex justify-between">
       <Link href={"/"} className="flex items-center">
         <button>
           <Image

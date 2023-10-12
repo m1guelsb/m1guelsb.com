@@ -44,7 +44,7 @@ async function getArticles({ categories }: { [key: string]: string }) {
     }&size=20`,
     {
       next: {
-        revalidate: 43200, //12h
+        revalidate: 3600, //1h
       },
     }
   );

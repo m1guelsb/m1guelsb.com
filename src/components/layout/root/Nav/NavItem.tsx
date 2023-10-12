@@ -15,7 +15,7 @@ export const NavItem = ({ title, href, className, ...props }: NavItemProps) => {
   const pathname = usePathname();
 
   return (
-    <Link role="link" href={href}>
+    <Link role="link" href={href} className="h-full px-2">
       <button
         {...props}
         className={navItemVariants({ isActive: pathname === href })}
@@ -27,7 +27,13 @@ export const NavItem = ({ title, href, className, ...props }: NavItemProps) => {
 };
 
 const navItemVariants = cva(
-  ["hover:text-accent", "focus-within:text-accent", "transition", "text-lg"],
+  [
+    "h-full",
+    "hover:text-accent",
+    "focus-within:text-accent",
+    "transition",
+    "text-lg",
+  ],
   {
     variants: {
       isActive: {

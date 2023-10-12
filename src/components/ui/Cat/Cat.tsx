@@ -14,7 +14,10 @@ export const Cat = () => {
   });
 
   return (
-    <div role="figure" className="h-[28rem] w-[28rem] bg-background1">
+    <div
+      role="figure"
+      className="hidden tablet:block h-[28rem] w-[28rem] bg-background1"
+    >
       <RiveComponent />
     </div>
   );

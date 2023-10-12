@@ -31,7 +31,7 @@ async function getArticle(articleParam: string) {
     `${process.env.NEXT_PUBLIC_API_URL}/articles/${articleParam}`,
     {
       next: {
-        revalidate: 43200, //12h
+        revalidate: 3600, //1h
       },
     }
   );
