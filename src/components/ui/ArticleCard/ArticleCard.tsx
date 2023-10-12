@@ -3,8 +3,7 @@ import Link from "next/link";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import { Button, buttonVariants } from "@/components/ui";
 import { Article } from "@/types";
-import { parseTitleHref } from "@/utils/functions";
-import { formatDate } from "../../../utils/functions/formatDate";
+import { formatDate, parseTitleHref } from "@/utils/functions";
 
 export interface ArticleCardProps extends Omit<Article, "body"> {}
 
@@ -17,18 +16,14 @@ export const ArticleCard = ({
   const hrefTitle = parseTitleHref(title);
 
   return (
-    <Link
-      href={`/blog/${hrefTitle}`}
-      role="link"
-      className="transition hover:-translate-y-1 focus-within:-translate-y-1"
-    >
+    <Link href={`/blog/${hrefTitle}`} role="link">
       <div
         role="listitem"
         className="h-[19rem] w-full p-[1.25rem] flex flex-col gap-[0.5rem] rounded-[1rem] bg-background2"
       >
         <h2>{title}</h2>
 
-        <div className="flex gap-[1rem] flex-wrap">
+        <div className="flex gap-x-3 gap-y-2 flex-wrap">
           {categories.map(({ id, title }) => (
             <span
               className={buttonVariants({ size: "small", variant: "outline" })}

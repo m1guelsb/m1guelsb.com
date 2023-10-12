@@ -34,7 +34,10 @@ export const TiptapEditor = ({ onChange }: TiptapEditorProps) => {
 
   return (
     <>
-      <EditorContent className="article-body mx-auto" editor={editor} />
+      <EditorContent
+        className="article-body mx-auto p-4 bg-background2 border border-accent rounded-lg"
+        editor={editor}
+      />
       {editor && <EditorBubbleMenu editor={editor} />}
     </>
   );

@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="pt-bt">
       <body
-        className={`${inter.className} w-[1100px] mx-auto bg-background1 text-text1`}
+        className={`${inter.className} max-w-5xl px-4 mx-auto bg-background1 text-text1`}
       >
         <Header />
         <main>{children}</main>

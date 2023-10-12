@@ -34,19 +34,10 @@ const config: Config = {
         sm: "0.875rem",
       },
       screens: {
-        sm: "640px",
-        md: "768px",
-        lg: "1024px",
-        xl: "1280px",
-      },
-      keyframes: {
-        fadeIn: {
-          from: { opacity: "0" },
-          to: { opacity: "1" },
-        },
-      },
-      animation: {
-        fadeIn: "fadeIn .3s ease-in-out",
+        phone: "640px",
+        tablet: "768px",
+        laptop: "1024px",
+        desktop: "1280px",
       },
       typography: {
         quoteless: {

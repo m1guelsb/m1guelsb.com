@@ -22,9 +22,9 @@
   :root {
     font-size: 16px;
 
-    @media screen and (max-width: 768px) {
+    /*@media screen and (max-width: 768px) {
       font-size: 14px;
-    }
+    } */
   }
 
   *::-webkit-scrollbar {
@@ -55,12 +55,10 @@
 
 @layer components {
   .article-body {
-    @apply w-full bg-background2 p-6 rounded-lg;
-
     @apply prose prose-slate prose-invert prose-purple prose-pre:border prose-pre:border-slate-500;
 
     @apply prose-h2:text-attention prose-a:text-attention prose-quoteless;
 
-    @apply prose-code:bg-[#0a0513] prose-code:py-1 prose-code:rounded-md;
+    @apply prose-code:bg-[#040109] prose-code:py-1 prose-code:rounded-md;
   }
 }
