@@ -8,4 +8,4 @@ export * from "./MultipleSelect/MultipleSelect";
 export * from "./ErrorMessage/ErrorMessage";
 export * from "./BubbleButton/BubbleButton";
 export * from "./Summary/Summary";
-export * from "./CodeBlock/CodeBlock";
+export * from "./ArticleBody/ArticleBody";

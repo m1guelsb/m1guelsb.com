@@ -4,17 +4,23 @@ import { ChevronRightIcon } from "@radix-ui/react-icons";
 import { Button, buttonVariants } from "@/components/ui";
 import { Article } from "@/types";
 import { parseTitleHref } from "@/utils/functions";
+import { formatDate } from "../../../utils/functions/formatDate";
 
 export interface ArticleCardProps extends Omit<Article, "body"> {}
 
-export const ArticleCard = ({ title, brief, categories }: ArticleCardProps) => {
+export const ArticleCard = ({
+  title,
+  brief,
+  categories,
+  updatedAt,
+}: ArticleCardProps) => {
   const hrefTitle = parseTitleHref(title);
 
   return (
     <Link
       href={`/blog/${hrefTitle}`}
       role="link"
-      className="transition hover:-translate-y-1 focus-within:-translate-y-1 animate-fadeIn"
+      className="transition hover:-translate-y-1 focus-within:-translate-y-1"
     >
       <div
         role="listitem"
@@ -37,7 +43,8 @@ export const ArticleCard = ({ title, brief, categories }: ArticleCardProps) => {
           {brief}
         </p>
 
-        <div className="w-full flex justify-end">
+        <div className="w-full flex items-center justify-between">
+          <span className="text-text2 text-sm">{formatDate(updatedAt!)}</span>
           <Button variant={"link"} size={"small"}>
             Ver mais <ChevronRightIcon />
           </Button>

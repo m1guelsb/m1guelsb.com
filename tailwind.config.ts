@@ -6,6 +6,11 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    {
+      pattern: /hljs+/,
+    },
+  ],
   theme: {
     extend: {
       colors: {
@@ -43,8 +48,22 @@ const config: Config = {
       animation: {
         fadeIn: "fadeIn .3s ease-in-out",
       },
+      typography: {
+        quoteless: {
+          css: {
+            "blockquote p:first-of-type::before": { content: "none" },
+            "blockquote p:first-of-type::after": { content: "none" },
+          },
+        },
+      },
+    },
+    hljs: {
+      theme: "tokyo-night-dark",
     },
   },
-  plugins: [require("@tailwindcss/typography")],
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("tailwind-highlightjs"),
+  ],
 };
 export default config;

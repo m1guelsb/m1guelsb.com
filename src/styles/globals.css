@@ -2,64 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  font-size: 16px;
+@layer base {
+  h1 {
+    line-height: 4.5rem;
+    font-weight: 700;
+    @apply text-3xl;
+  }
+  h2 {
+    line-height: 2.5rem;
+    font-weight: 700;
+    @apply text-2xl;
+  }
+  h3 {
+    line-height: 2rem;
+    font-weight: 500;
+    @apply text-xl;
+  }
 
-  @media screen and (max-width: 768px) {
-    font-size: 14px;
+  :root {
+    font-size: 16px;
+
+    @media screen and (max-width: 768px) {
+      font-size: 14px;
+    }
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  *::-webkit-scrollbar-track {
+    @apply bg-background1;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply bg-accent;
+    border-radius: 0.25rem;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent2;
+  }
+
+  code::-webkit-scrollbar {
+    height: 6px;
+  }
+  code::-webkit-scrollbar-track {
+    @apply bg-background3;
+    border-radius: 0.25rem;
   }
 }
 
-body::-webkit-scrollbar {
-  width: 10px;
-}
+@layer components {
+  .article-body {
+    @apply w-full bg-background2 p-6 rounded-lg;
 
-body::-webkit-scrollbar-track {
-  @apply bg-background2;
-}
+    @apply prose prose-slate prose-invert prose-purple prose-pre:border prose-pre:border-slate-500;
 
-body::-webkit-scrollbar-thumb {
-  @apply bg-accent;
-  border-radius: 0.25rem;
-}
+    @apply prose-h2:text-attention prose-a:text-attention prose-quoteless;
 
-body::-webkit-scrollbar-thumb:hover {
-  @apply bg-accent2;
-}
-
-textarea,
-ul::-webkit-scrollbar {
-  width: 6px;
-}
-
-textarea,
-ul::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-
-textarea,
-ul::-webkit-scrollbar-thumb {
-  @apply bg-accent;
-  border-radius: 0.25rem;
-}
-
-textarea,
-ul::-webkit-scrollbar-thumb:hover {
-  @apply bg-accent2;
-}
-
-h1 {
-  line-height: 4.5rem;
-  font-weight: 700;
-  @apply text-3xl;
-}
-h2 {
-  line-height: 2.5rem;
-  font-weight: 700;
-  @apply text-2xl;
-}
-h3 {
-  line-height: 2rem;
-  font-weight: 500;
-  @apply text-xl;
+    @apply prose-code:bg-[#0a0513] prose-code:py-1 prose-code:rounded-md;
+  }
 }
