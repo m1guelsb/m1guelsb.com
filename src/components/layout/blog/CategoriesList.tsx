@@ -16,7 +16,7 @@ export const CategoriesList = ({ categoriesData }: CategoriesListProps) => {
   return (
     <div>
       {categoriesData?.length ? (
-        <div className="flex flex-wrap gap-[1rem]">
+        <div className="flex flex-wrap gap-3">
           {categoriesData?.map(({ id, title }) => {
             return (
               <Button

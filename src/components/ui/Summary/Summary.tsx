@@ -7,7 +7,7 @@ interface SummaryProps {
 
 export const Summary = ({ articleBody }: SummaryProps) => {
   return (
-    <aside className="relative h-full flex flex-col gap-[2rem]">
+    <aside className="hidden laptop:flex relative w-72 h-full flex-col gap-[2rem]">
       <nav className="sticky top-[4rem] flex flex-col gap-[2rem]">
         <h2>Sumário</h2>
         <ul className="flex flex-col gap-[1rem]">
