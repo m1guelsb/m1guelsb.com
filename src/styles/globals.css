@@ -4,19 +4,14 @@
 
 @layer base {
   h1 {
-    line-height: 4.5rem;
+    line-height: 1.5;
     font-weight: 700;
     @apply text-3xl;
   }
   h2 {
-    line-height: 2.5rem;
+    line-height: 1.3;
     font-weight: 700;
     @apply text-2xl;
-  }
-  h3 {
-    line-height: 2rem;
-    font-weight: 500;
-    @apply text-xl;
   }
 
   :root {
@@ -55,7 +50,7 @@
 
     @apply prose-h2:text-attention prose-a:text-attention prose-quoteless;
 
-    @apply prose-pre:p-0.5 prose-pre:border prose-pre:border-slate-500 prose-pre:rounded-lg;
+    @apply prose-pre:mt-0 prose-pre:p-0.5 prose-pre:border prose-pre:border-slate-500 prose-pre:rounded-lg;
 
     @apply prose-code:bg-[#040109] prose-code:border prose-code:border-slate-800 prose-code:py-1 prose-code:rounded-md;
   }
