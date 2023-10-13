@@ -1,40 +1,43 @@
+import { Metadata } from "next";
+import { articles } from "@/mdx-database/articles";
+import { findArticleByTitle } from "@/mdx-database/findArticleByTitle";
 import { ArticleHero } from "@/components/layout/article";
-import { ArticleBody, Summary } from "@/components/ui";
+import { ArticleBody } from "@/components/ui";
+import { parseTitleHref } from "@/utils/functions";
 
 export default async function ArticlePage({
   params,
 }: {
   params: { article: string };
 }) {
+  const { article } = findArticleByTitle(params.article);
+
   return (
     <section className="flex flex-col items-center laptop:items-start gap-[5rem]">
-      {/* <ArticleHero article={article} />
+      <ArticleHero article={article} />
 
       <div className="grid grid-cols-1 laptop:grid-cols-[1fr_min-content] gap-[5rem]">
-        <ArticleBody body={article.body} />
-        <Summary articleBody={article.body} />
-      </div> */}
+        <ArticleBody articlePath={article.body} />
+        {/* <Summary articleBody={article.body} /> */}
+      </div>
     </section>
   );
 }
 
-export async function generateStaticParams({
+export async function generateMetadata({
   params,
 }: {
   params: { article: string };
-}) {
+}): Promise<Metadata> {
+  const { article } = findArticleByTitle(params.article);
   return {
-    article: params.article,
+    title: article?.title,
+    description: article?.brief,
   };
 }
 
-// export async function generateMetadata({
-//   params,
-// }: {
-//   params: { article: string };
-// }): Promise<Metadata> {
-//   return {
-//     title: article.title,
-//     description: article.brief,
-//   };
-// }
+export async function generateStaticParams() {
+  return articles?.map((article) => ({
+    article: parseTitleHref(article.title),
+  }));
+}

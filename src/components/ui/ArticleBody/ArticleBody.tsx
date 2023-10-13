@@ -1,7 +1,16 @@
-interface ArticleBodyProps {
-  body: string;
-}
+import dynamic from "next/dynamic";
 
-export const ArticleBody = ({ body }: ArticleBodyProps) => {
-  return <article className="article-body">{body}</article>;
+interface ArticleBodyProps {
+  articlePath: string;
+}
+export const ArticleBody = ({ articlePath }: ArticleBodyProps) => {
+  const Body = dynamic(
+    () => import(`../../../mdx-database/articles/${articlePath}`)
+  );
+
+  return (
+    <article className="article-body">
+      <Body />
+    </article>
+  );
 };
