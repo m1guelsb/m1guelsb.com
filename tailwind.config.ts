@@ -18,13 +18,14 @@ const config: Config = {
         accent: "#936DFF",
         accent2: "#8459FF",
         accent3: "#7140FF",
-        attention: "#CEFF40",
         text1: "#FFFFFF",
         text2: "#99A2FF",
         background1: "#080313",
         background2: "#140B27",
         background3: "#251448",
-        danger: "#e7253d",
+        attention: "#CEFF40",
+        info: "#40FFD1",
+        danger: "#FF406E",
       },
       fontSize: {
         "3xl": "2.5rem",
@@ -40,14 +41,19 @@ const config: Config = {
         laptop: "1024px",
         desktop: "1280px",
       },
-      typography: {
+      typography: ({ theme }: { theme: any }) => ({
+        strong: {
+          css: {
+            "p strong": { color: "#FF406E" },
+          },
+        },
         quoteless: {
           css: {
             "blockquote p:first-of-type::before": { content: "none" },
             "blockquote p:first-of-type::after": { content: "none" },
           },
         },
-      },
+      }),
     },
     hljs: {
       theme: "tokyo-night-dark",
