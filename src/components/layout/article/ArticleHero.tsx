@@ -1,6 +1,6 @@
 import { buttonVariants } from "@/components/ui";
 import { Article } from "@/types";
-import { calculateReadingTime, formatDate } from "@/utils/functions";
+import { formatDate } from "@/utils/functions";
 
 interface ArticleHeroProps {
   article: Article;
@@ -26,10 +26,7 @@ export const ArticleHero = ({ article }: ArticleHeroProps) => {
       </div>
       <div className="w-full flex justify-between text-right">
         <b className="text-lg text-accent text-medium">
-          {formatDate(article.updatedAt!)}
-        </b>
-        <b className="text-lg text-accent text-medium">
-          {calculateReadingTime(article.body)}
+          {formatDate(article.updatedAt)}
         </b>
       </div>
     </div>

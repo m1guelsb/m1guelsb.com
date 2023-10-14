@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { articles } from "@/mdx-database/articles";
 import { findArticleByTitle } from "@/mdx-database/findArticleByTitle";
 import { ArticleHero } from "@/components/layout/article";
-import { ArticleBody } from "@/components/ui";
+import { ArticleBody, Summary } from "@/components/ui";
 import { parseTitleHref } from "@/utils/functions";
 
 export default async function ArticlePage({
@@ -18,7 +18,7 @@ export default async function ArticlePage({
 
       <div className="grid grid-cols-1 laptop:grid-cols-[1fr_min-content] gap-[5rem]">
         <ArticleBody articlePath={article.body} />
-        {/* <Summary articleBody={article.body} /> */}
+        <Summary articleTopics={article.topics} />
       </div>
     </section>
   );

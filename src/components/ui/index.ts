@@ -6,3 +6,4 @@ export * from "./Summary/Summary";
 export * from "./ArticleBody/ArticleBody";
 export * from "./CodeHeader/CodeHeader";
 export * from "./CodeChange/CodeChange";
+export * from "./TopicTitle/TopicTitle";
