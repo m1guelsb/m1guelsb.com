@@ -6,6 +6,6 @@ export type Article = {
   body: string;
   brief: string;
   categories: Category[];
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 };
