@@ -5,3 +5,4 @@ export * from "./BubbleButton/BubbleButton";
 export * from "./Summary/Summary";
 export * from "./ArticleBody/ArticleBody";
 export * from "./CodeHeader/CodeHeader";
+export * from "./CodeChange/CodeChange";
