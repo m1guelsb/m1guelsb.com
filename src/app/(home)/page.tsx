@@ -1,8 +1,10 @@
 import { ArticlesList } from "@/components/layout/blog";
 import { HeroSection } from "@/components/layout/home";
-import { articles } from "@/mdx-database/articles";
+import { findAllArticles } from "@/mdx-database/findAllArticles";
 
 export default async function Home() {
+  const { articles } = findAllArticles({ size: 4 });
+
   return (
     <section className="flex flex-col gap-[2rem]">
       <HeroSection />

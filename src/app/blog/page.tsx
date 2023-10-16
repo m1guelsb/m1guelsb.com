@@ -1,6 +1,6 @@
 import { ArticlesList, CategoriesList } from "@/components/layout/blog";
 import { categories } from "@/mdx-database/categories";
-import { findArticlesByCategories } from "@/mdx-database/findArticlesByCategories";
+import { findAllArticles } from "@/mdx-database/findAllArticles";
 
 export const metadata = {
   title: "Blog | m1guelsb",
@@ -14,7 +14,9 @@ export default async function Blog({
   params: { slug: string };
   searchParams: { categories: string | undefined };
 }) {
-  const { articles } = findArticlesByCategories(searchParams.categories);
+  const { articles } = findAllArticles({
+    categoriesQueryParams: searchParams.categories,
+  });
 
   return (
     <section className="flex flex-col gap-[2rem]">
