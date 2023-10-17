@@ -41,7 +41,7 @@ const config: Config = {
         laptop: "1024px",
         desktop: "1280px",
       },
-      typography: ({ theme }: { theme: any }) => ({
+      typography: {
         strong: {
           css: {
             "p strong": { color: "#FF406E" },
@@ -53,7 +53,7 @@ const config: Config = {
             "blockquote p:first-of-type::after": { content: "none" },
           },
         },
-      }),
+      },
     },
     hljs: {
       theme: "tokyo-night-dark",
