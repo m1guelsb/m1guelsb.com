@@ -1,20 +1,56 @@
-interface Tech {
+export interface Tech {
   title: string;
   iconPath: string;
-  size: number;
+  size: "lg" | "md" | "sm";
   color: string;
 }
 export const techs: Tech[] = [
   {
     title: "Javascript",
     iconPath: "/techs/javascript.svg",
-    size: 24,
+    size: "lg",
     color: "#f0db4f",
+  },
+  {
+    title: "Typescript",
+    iconPath: "/techs/typescript.svg",
+    size: "lg",
+    color: "#007acc",
   },
   {
     title: "Java",
     iconPath: "/techs/java.svg",
-    size: 24,
-    color: "#062740",
+    size: "lg",
+    color: "#cddbe5",
+  },
+  {
+    title: "ReactJS",
+    iconPath: "/techs/reactjs.svg",
+    size: "md",
+    color: "#ffffff",
+  },
+  {
+    title: "NextJS",
+    iconPath: "/techs/nextjs.svg",
+    size: "md",
+    color: "#ffffff",
+  },
+  {
+    title: "Spring boot",
+    iconPath: "/techs/spring.svg",
+    size: "md",
+    color: "#dcf4bd",
+  },
+  {
+    title: "NodeJS",
+    iconPath: "/techs/nodejs.svg",
+    size: "md",
+    color: "#dcf4bd",
+  },
+  {
+    title: "NestJS",
+    iconPath: "/techs/nestjs.svg",
+    size: "md",
+    color: "#f6bcc9",
   },
 ];
