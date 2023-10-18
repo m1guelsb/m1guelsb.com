@@ -1,0 +1,184 @@
+Ao longo de nosso tempo de estudo, percebemos que o React possui uma série de detalhes que nos pegam desprevenidos e ocasionam comportamentos inesperados ou erros não tão detalhados que acabam nos confundindo.
+
+> Dedico este artigo aos iniciantes em React que, assim como o meu eu do passado, perdeu um tempinho tentando resolver tais problemas. 😅
+
+<TopicTitle title={"Propriedade style no JSX"}/>
+JSX foi construído para ser bem similar ao clássico HTML. Mas há algumas diferenças que, mesmo bem documentadas, acabamos esquecendo. Dentre essas, há o uso de `className` no lugar de `class` e a forma com que atribuímos o valor da propriedade `style`.
+
+No **HTML** atribuímos os valores em uma string e escrevemos parecido com o **CSS** padrão:
+
+<CodeHeader title="HTML" />
+```html
+<button style="height: 3rem; background-color: blue;">
+  A really cool button
+</button>
+```
+
+Já dentro do JSX, precisamos atribuir em formato de objeto javascript e usando **camelCase** para propriedades que contém nomes compostos.
+
+>Mas há uma pegadinha! 🧐
+
+Em outras propriedades do JSX, geralmente atribuímos o valor entre **um** par de chaves:
+<CodeHeader title="JSX" />
+```javascript
+return (
+  <input placeholder={"My beautiful input"} />
+)
+```
+Porém, quando se trata da propriedade `style` precisamos inserir mais um par de chaves para que consigamos atribuir os valores de nossos estilos:
+<CodeHeader title="JSX" />
+```javascript
+return (
+  <button style={{ height: "3rem", backgroundColor: "blue" }}>
+    A really cool button
+  </button>
+)
+```
+
+Isso acontece porque o primeiro par de chaves serve para criar um **expression slot**, onde podemos atribuir qualquer expressão javascript como por exemplo um condicional ternário. O segundo par de chaves é um **objeto javascript** contendo os nossos estilos.
+
+<TopicTitle title={"Acessar um valor que ainda não existe"}/>
+Digamos que você possui um estado que guardará dados que serão providos por uma api, então tentará exibir valores da seguinte forma:
+
+<CodeHeader title="/components/PokemonList.jsx" />
+```javascript 
+import React from 'react';
+
+export const PokemonsList = () => {
+  const [pokemons, setPokemons] = React.useState();
+
+  React.useEffect(() => {
+    fetch("https://pokeapi.co/api/v2/pokemon")
+      .then((response) => response.json())
+      .then((data) => setPokemons(data.results));
+  }, []);
+  
+  return (
+    <div>
+      {pokemons.map((pokemon) => (
+        <h2>{pokemon.name}</h2>
+      ))}
+    </div>
+  );
+}
+```
+E então, vemos o seguinte erro ao tentar iterar `pokemons.map()`:
+<CodeHeader title="console" />
+```console
+  Cannot read properties of undefined (reading 'map')
+```
+
+A requisição acontece de forma assíncrona, então em primeiro momento, a variável `pokemons` irá conter o valor que atribuímos ao iniciar o estado (que nesse caso deixamos vazio), ou seja: `undefined`.
+
+Temos duas formas de resolver isso:
+
+1. Iniciando o estado como um array vazio:
+<CodeHeader title="/components/PokemonList.jsx" />
+<CodeChange
+  language={"language-javascript"}
+  deletion={"const [pokemons, setPokemons] = React.useState();"} 
+  addition={"const [pokemons, setPokemons] = React.useState([]);"} />
+
+2. Usando o **optional chaining** `?.`:
+<CodeHeader title="/components/PokemonList.jsx" />
+<CodeChange
+  language={"language-javascript"}
+  deletion={"{pokemons.map((pokemon) => ("} 
+  addition={"{pokemons?.map((pokemon) => ("} />
+
+Inserir `?.` antes de acessar um método ou uma propriedade de um objeto que ainda não existe, faz com que o javascript retorne `undefined` em vez de um erro.
+
+>Lembre-se de usar o **optional chaining** sempre que uma propriedade de um objeto pode ser `null` ou `undefined`! ☝🤓
+
+<TopicTitle title={"A propriedade key quando exibindo uma lista"}/>
+Muitas vezes ao renderizar uma lista de itens usando `.map`, acabamos esquecendo um detalhe essencial para o React: A propriedade `key`.
+<CodeHeader title="console" />
+```console
+  Warning: Each child in a list should have a unique "key" prop.
+```
+Quando renderizamos uma lista, precisamos dar um pouco mais de contexto para que o React consiga identificar cada item. E o valor da propriedade `key` deve ser **único**.
+É comum vemos em alguns lugares o `index` da iteração sendo usado:
+<CodeHeader title="/components/PokemonList.jsx" />
+```javascript
+return (
+  <div>
+    {pokemons.map((pokemon, index) => (
+      <!--usando index-->
+      <h2 key={index}>{pokemon.name}</h2>
+    ))}
+  </div>
+);
+```
+>⚠️Mas em alguns casos, isso é uma má ideia.⚠️
+
+O valor índex não está ligado a cada item específico da lista, mas sim a suas posições.
+
+Em uma situação onde a ordem da lista de items mudará, o React perde a referência de cada um dos itens resultando em problemas de performance, renderização e até acessibilidade.
+
+Para evitar tais problemas devemos atribuir a propriedade `key` um valor realmente único de cada item. Em nosso caso, onde estamos usando dados de uma api externa, é esperado que todo item tenha um `id` único:
+<CodeHeader title="/components/PokemonList.jsx" />
+```javascript
+return (
+  <div>
+    {pokemons.map((pokemon) => (
+      <!--usando id-->
+      <h2 key={pokemon.id}>{pokemon.name}</h2>
+    ))}
+  </div>
+);
+```
+Mas em casos onde tal valor não existe, podemos criar o nosso próprio `id` único da seguinte maneira:
+
+<CodeHeader title="/components/PokemonList.jsx" />
+```javascript
+const pokemonsWithoutId = fetch("/pokemons/noIds")
+  .then((response) => response.json())
+  .then((data) => return data.results);
+
+//criando uma nova lista
+const pokemonsWithId = pokemonsWithoutId.map(item => {
+  return {
+    ...item,
+    //atribuindo um id único para cada item
+    id: crypto.randomUUID(),
+  };
+});
+```
+O método `crypto.randomUUID` é totalmente seguro de usar, já que possui [suporte em todos navegadores atuais.](https://caniuse.com/mdn-api_crypto_randomuuid "Suporte do método 'crypto.randomUUID'")
+
+Este método retornará um valor parecido com `0bf9b4a4-6bb4-11ee-b962-0242ac120002`, que é um [universally unique identifier.](https://en.wikipedia.org/wiki/Universally_unique_identifier "Mais sobre UUID")
+
+<TopicTitle title={"Verificando se uma lista está vazia"}/>
+Digamos que nosso objetivo é mostrar condicionalmente uma lista somente quando ela não estiver vazia. É comum pensarmos da seguinte forma:
+<CodeHeader title="/components/Pokedex.jsx" />
+```jsx
+const [pokemons, setPokemons] = React.useState([]);
+
+return (
+  <div>
+    {pokemons.length && <PokemonList pokemonsData={pokemons} />}
+  </div>
+);
+```
+Em nosso HTML veremos um simples **0**. Isso ocorre porque diferente de outros valores [falsy](https://developer.mozilla.org/en-US/docs/Glossary/Falsy "Mais sobre valores falsy") (`""`, `false`, `null`), o número **0** é válido dentro do JSX. Afinal, em algumas ocasiões queremos de fato exibi-lo.
+
+Para termos o comportamento esperado podemos fazer uma verificação realmente válida checando se `length` é maior que 0: `pokemons.length > 0 &&`.\
+Ou usar um verificador ternário:
+```jsx
+return (
+  <div>
+    {pokemons.length ? (
+      <PokemonList pokemonsData={pokemons} />
+    ) : null}
+  </div>
+);
+```
+E para melhorar a experiência de uso da nossa aplicação, em vez de exibir nada (`null`), poderíamos mostrar um feedback de **Loading** para os usuários!
+
+---
+
+Acha que faltou alguma pegadinha que não citei?\
+Ficou com alguma dúvida?\
+Sinta-se livre para me mandar uma mensagem em meu [Twitter/X](https://x.com/m1guelsb).
+
+Obrigado pela leitura! 💕
