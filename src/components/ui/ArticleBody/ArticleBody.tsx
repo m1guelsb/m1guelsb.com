@@ -1,12 +1,16 @@
-import { Interweave } from "interweave";
-import { polyfill } from "interweave-ssr";
-polyfill();
-interface ArticleBodyProps {
-  body: string;
-}
+import dynamic from "next/dynamic";
 
-export const ArticleBody = ({ body }: ArticleBodyProps) => {
+interface ArticleBodyProps {
+  articlePath: string;
+}
+export const ArticleBody = ({ articlePath }: ArticleBodyProps) => {
+  const Body = dynamic(
+    () => import(`../../../mdx-database/articles/${articlePath}`)
+  );
+
   return (
-    <Interweave className="article-body" tagName="article" content={body} />
+    <article className="article-body">
+      <Body />
+    </article>
   );
 };

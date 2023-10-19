@@ -5,6 +5,7 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./mdx-components.tsx",
   ],
   safelist: [
     {
@@ -17,13 +18,14 @@ const config: Config = {
         accent: "#936DFF",
         accent2: "#8459FF",
         accent3: "#7140FF",
-        attention: "#CEFF40",
         text1: "#FFFFFF",
         text2: "#99A2FF",
         background1: "#080313",
         background2: "#140B27",
         background3: "#251448",
-        danger: "#e7253d",
+        attention: "#CEFF40",
+        info: "#40FFD1",
+        danger: "#FF406E",
       },
       fontSize: {
         "3xl": "2.5rem",
@@ -40,6 +42,11 @@ const config: Config = {
         desktop: "1280px",
       },
       typography: {
+        strong: {
+          css: {
+            "p strong": { color: "#FF406E" },
+          },
+        },
         quoteless: {
           css: {
             "blockquote p:first-of-type::before": { content: "none" },
