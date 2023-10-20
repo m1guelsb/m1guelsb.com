@@ -21,7 +21,14 @@ export default async function Blog({
   return (
     <section className="flex flex-col gap-[2rem]">
       <CategoriesList categoriesData={categories} />
-      <ArticlesList articlesData={articles} />
+
+      <div className="flex flex-col gap-[1rem]">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg laptop:text-xl">Artigos</h2>
+          <span className="text-text2">{articles?.length} artigos</span>
+        </div>
+        <ArticlesList articlesData={articles} />
+      </div>
     </section>
   );
 }

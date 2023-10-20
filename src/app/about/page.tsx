@@ -14,7 +14,7 @@ export const metadata = {
 
 export default async function About() {
   return (
-    <section className="grid grid-cols-2 py-8">
+    <section className="grid grid-cols-1 gap-4 tablet:grid-cols-2 py-8">
       <div className="h-full flex flex-col justify-between gap-8">
         <div className="flex flex-col gap-8">
           <h1>Miguel Silva Barbosa</h1>
@@ -42,9 +42,9 @@ export default async function About() {
       </div>
 
       <div className="flex flex-col gap-8 items-end overflow-hidden">
-        <h2>Skills</h2>
-        <div className="flex flex-col gap-10">
-          <div className="flex gap-6 flex-wrap justify-end">
+        <h2 className="text-text2">Skills</h2>
+        <div className="flex flex-col gap-10 w-full">
+          <div className="flex gap-6 flex-wrap justify-evenly phone:justify-end">
             {techs
               .filter((tech) => tech.size === "lg")
               .map((tech) => (
@@ -52,7 +52,7 @@ export default async function About() {
               ))}
           </div>
 
-          <div className="flex gap-6 flex-wrap justify-end">
+          <div className="flex gap-6 flex-wrap justify-evenly phone:justify-end">
             {techs
               .filter((tech) => tech.size === "md")
               .map((tech) => (
