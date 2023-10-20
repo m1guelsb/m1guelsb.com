@@ -1,19 +1,11 @@
-"use client";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Tech } from "@/techs-database";
+import { Tech } from "@/skills";
 
 export const TechBubble = ({ title, iconPath, size, color }: Tech) => {
   return (
-    <motion.span
-      className="flex flex-col items-center gap-1"
-      drag
-      dragConstraints={{
-        top: -50,
-        left: -200,
-        right: 200,
-        bottom: 50,
-      }}
+    <span
+      className="flex flex-col items-center gap-1 select-none"
+      title={title}
     >
       <span
         style={{
@@ -32,7 +24,7 @@ export const TechBubble = ({ title, iconPath, size, color }: Tech) => {
         />
       </span>
       <p className="text-xs">{title}</p>
-    </motion.span>
+    </span>
   );
 };
 
