@@ -4,7 +4,10 @@ import { Tech } from "@/skills";
 export const TechBubble = ({ title, iconPath, size, color }: Tech) => {
   return (
     <span
-      className="flex flex-col items-center gap-1 select-none"
+      className="flex flex-col items-center gap-1 select-none relative"
+      style={{
+        width: sizes[size] * 2,
+      }}
       title={title}
     >
       <span
@@ -23,7 +26,7 @@ export const TechBubble = ({ title, iconPath, size, color }: Tech) => {
           height={sizes[size]}
         />
       </span>
-      <p className="text-xs">{title}</p>
+      <p className="text-xs text-center">{title}</p>
     </span>
   );
 };

@@ -39,13 +39,13 @@ export const techs: Tech[] = [
     title: "Spring boot",
     iconPath: "/techs/spring.svg",
     size: "md",
-    color: "#dcf4bd",
+    color: "#f3fbe9",
   },
   {
     title: "NodeJS",
     iconPath: "/techs/nodejs.svg",
     size: "md",
-    color: "#dcf4bd",
+    color: "#f3fbe9",
   },
   {
     title: "NestJS",

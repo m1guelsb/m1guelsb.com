@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ChevronRightIcon } from "@radix-ui/react-icons";
-import { Button, buttonVariants } from "@/components/ui";
+import { buttonVariants } from "@/components/ui";
 import { Article } from "@/types";
 import { formatDate, parseTitleHref } from "@/utils/functions";
 
@@ -17,9 +16,9 @@ export const ArticleCard = ({
 
   return (
     <Link href={`/blog/${hrefTitle}`} role="link">
-      <div
+      <button
         role="listitem"
-        className="h-[19rem] w-full p-[1.25rem] flex flex-col gap-[0.5rem] rounded-[1rem] bg-background2"
+        className="h-[19rem] w-full p-[1.25rem] text-left flex flex-col gap-[0.75rem] rounded-[1rem] bg-background2"
       >
         <h2>{title}</h2>
 
@@ -34,17 +33,14 @@ export const ArticleCard = ({
           ))}
         </div>
 
-        <p className="h-full w-full overflow-hidden text-ellipsis line-clamp-7">
+        <p className="h-full w-full overflow-hidden text-ellipsis line-clamp-5">
           {brief}
         </p>
 
         <div className="w-full flex items-center justify-between">
-          <span className="text-text2 text-sm">{formatDate(updatedAt!)}</span>
-          <Button variant={"link"} size={"small"}>
-            Ver mais <ChevronRightIcon />
-          </Button>
+          <span className="text-text2 text-sm">{formatDate(updatedAt)}</span>
         </div>
-      </div>
+      </button>
     </Link>
   );
 };
