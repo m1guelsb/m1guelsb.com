@@ -10,11 +10,15 @@ interface NavItemProps
   href: string;
 }
 
-export const NavItem = ({ title, href, className, ...props }: NavItemProps) => {
+export const MobileNavItem = ({ href, className, ...props }: NavItemProps) => {
   const pathname = usePathname();
 
   return (
-    <Link role="link" href={href} className="h-full px-2">
+    <Link
+      role="link"
+      href={href}
+      className="h-10 w-10 rounded-full flex items-center justify-center"
+    >
       <button
         {...props}
         className={navItemVariants({ isActive: pathname === href })}
@@ -25,17 +29,22 @@ export const NavItem = ({ title, href, className, ...props }: NavItemProps) => {
 
 const navItemVariants = cva(
   [
-    "h-full",
+    "w-10",
+    "h-10",
+    "flex",
+    "items-center",
+    "justify-center",
     "hover:text-accent",
     "focus-within:text-accent",
     "transition",
     "text-lg",
+    "rounded-full",
   ],
   {
     variants: {
       isActive: {
         false: ["text-text1"],
-        true: ["text-accent"],
+        true: ["text-accent", "bg-background2"],
       },
     },
     defaultVariants: {

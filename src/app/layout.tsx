@@ -1,4 +1,4 @@
-import { Footer, Header } from "@/components/layout/root";
+import { Footer, Header, MobileNav } from "@/components/layout/root";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
@@ -21,8 +21,9 @@ export default function RootLayout({
         className={`${inter.className} max-w-5xl px-4 mx-auto bg-background1 text-text1`}
       >
         <Header />
-        <main>{children}</main>
+        <main className="mb-20 tablet:mb-0">{children}</main>
         <Footer />
+        <MobileNav />
       </body>
     </html>
   );
