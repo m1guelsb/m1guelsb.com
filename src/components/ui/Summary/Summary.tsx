@@ -40,7 +40,7 @@ export const Summary = ({ articleTopics }: SummaryProps) => {
                     : "text-text1"
                 )}
               >
-                {title}
+                <button className="text-left">{title}</button>
               </a>
             </li>
           ))}
