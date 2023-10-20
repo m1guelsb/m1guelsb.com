@@ -5,7 +5,8 @@ export const articles: Article[] = [
   {
     id: 1,
     title: "Erros comuns de iniciantes em ReactJS",
-    brief: "Aaaaaaaaaaaa",
+    brief:
+      "Neste artigo revisamos as pegadinhas mais comuns do React, por que acontecem e como resolve-las. 🧐",
     categories: [categories[0], categories[1]],
     topics: [
       "Propriedade style no JSX",
