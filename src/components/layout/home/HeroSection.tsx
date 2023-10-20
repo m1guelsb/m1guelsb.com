@@ -36,7 +36,7 @@ export const HeroSection = () => {
         </div>
       </div>
 
-      <Cat />
+      <Cat stateMachine="default" />
     </div>
   );
 };

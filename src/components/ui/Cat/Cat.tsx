@@ -2,10 +2,13 @@
 
 import { Alignment, Fit, Layout, useRive } from "@rive-app/react-canvas";
 
-export const Cat = () => {
+interface CatProps {
+  stateMachine: "default" | "404";
+}
+export const Cat = ({ stateMachine = "default" }: CatProps) => {
   const { RiveComponent } = useRive({
     src: "/cat.riv",
-    stateMachines: "default",
+    stateMachines: stateMachine,
     autoplay: true,
     layout: new Layout({
       fit: Fit.Cover,
