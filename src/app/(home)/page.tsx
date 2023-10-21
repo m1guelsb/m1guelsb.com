@@ -13,7 +13,7 @@ export default async function Home() {
 
       <div className="flex flex-col gap-[1rem]">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg laptop:text-xl">Artigos</h2>
+          <h2 className="text-lg laptop:text-xl">Artigos recentes</h2>
           <Link href={"/blog"}>
             <Button variant={"secondary"}>Ver todos</Button>
           </Link>

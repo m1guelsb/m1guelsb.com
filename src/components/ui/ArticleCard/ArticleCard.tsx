@@ -37,9 +37,9 @@ export const ArticleCard = ({
           {brief}
         </p>
 
-        <div className="w-full flex items-center justify-between">
+        {/* <div className="w-full flex items-center justify-between">
           <span className="text-text2 text-sm">{formatDate(updatedAt)}</span>
-        </div>
+        </div> */}
       </button>
     </Link>
   );
