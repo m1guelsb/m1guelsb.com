@@ -5,11 +5,6 @@ import { Poppins } from "next/font/google";
 
 const inter = Poppins({ weight: ["400", "500", "700"], subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "m1guelsb",
-  description: "Welcome to my blog!",
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -28,3 +23,53 @@ export default function RootLayout({
     </html>
   );
 }
+
+export const metadata: Metadata = {
+  title: "m1guelsb",
+  description:
+    "Friendly articles and tutorials for beginners. Front-end, Back-end, and more!",
+  keywords: [
+    "nextjs articles",
+    "reactjs articles",
+    "java articles",
+    "spring-boot articles",
+    "blog",
+    "nextjs",
+    "reactjs",
+    "java",
+    "spring-boot",
+    "technology",
+    "tecnologia",
+    "programming",
+    "programação",
+  ],
+  assets: "/hero.png",
+  twitter: {
+    creator: "@m1guelsb",
+    creatorId: "m1guelsb",
+
+    images: ["/hero.png"],
+    title: "m1guelsb",
+    description:
+      "Friendly articles and tutorials for beginners. Front-end, Back-end, and more!",
+  },
+  openGraph: {
+    url: "https://m1guelsb.com",
+    images: ["/hero.png"],
+    title: "m1guelsb",
+    description:
+      "Friendly articles and tutorials for beginners. Front-end, Back-end, and more!",
+    type: "article",
+    tags: [
+      "blog",
+      "nextjs",
+      "reactjs",
+      "java",
+      "spring-boot",
+      "technology",
+      "tecnologia",
+      "programming",
+      "programação",
+    ],
+  },
+};
