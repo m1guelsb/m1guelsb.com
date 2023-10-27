@@ -56,7 +56,7 @@ Quando enviamos uma requisição para criação de um person com valores inváli
 
 A única informação legível é que o erro que foi um `400 Bad request`, além disso temos `trace` e `message` com valores nem um pouco descritivos. Não sabemos quais foram os campos incorretos, nem quais valores devem ser enviados.
 
-Esse tipo de resposta, além de confundir os usuários de nossa API, também expõem as tecnologias que nosso back-end está usando. Podemos considerar isso como uma brecha de segurança já que toda tecnologia contém falhas.
+Isso não apenas confunde o usuário da API, mas também expõe a tecnologia que o back-end está usando. Podemos considerar isso uma brecha de segurança, pois toda tecnologia contém falhas.
 
 >É importante destacar a parte `MethodArgumentNotValidException` que indica qual o tipo de erro que estamos recebendo. Precisaremos desta informação adiante.
 
