@@ -1,2 +1,39 @@
 Tratamento de erros, independente da linguagem, é sempre uma questão complicada. Mas quando se trata de Spring, existe um padrão recomendado e nativo para lidar com exceções sem muita dor de cabeça.
 
+<TopicTitle title={"A situação"}/>
+Temos uma aplicação onde estamos usando a biblioteca de validação padrão do Spring:
+
+<CodeHeader title="pom.xml" />
+```xml 
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+```
+E validamos os campos do [DTO](https://www.baeldung.com/java-dto-pattern "O que é DTO?") da entidade `Person`.
+<CodeHeader title="PersonDto.java" />
+```java
+@Data
+public class PersonDto {
+  @NotBlank(message = "name: Is required")
+  @Length(min = 3, max = 100, message = "title: Must be of 3 - 100 characters")
+  String name;
+
+  @NotBlank(message = "email: Is required")
+  @Email(message = "email: Invalid format")
+  String email;
+
+  @NotNull(message = "age: Is required")
+  @Min(value = 1, message = "age: Must be greater than 0")
+  @Max(value = 100, message = "age: Must be less than 100")
+  Integer age;
+}
+```
+Não podemos esquecer a annotation `@Valid` no body do nosso controller:
+```java
+@PostMapping
+public ResponseEntity<Person> create(@RequestBody @Valid @NotNull PersonDto dto) {
+  return ResponseEntity.status(HttpStatus.CREATED).body(personService.create(dto));
+}
+```
+
