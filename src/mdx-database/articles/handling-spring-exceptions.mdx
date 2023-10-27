@@ -114,10 +114,10 @@ public class GlobalExceptionHandler {
   }
 }
 ```
-Usando a annotation `@ExceptionHandler()`, nós interceptamos as exceções do tipo `MethodArgumentNotValidException` que é exatamente o mesmo que vimos no `trace` da resposta [anteriormente](#o-problema).
+Usando a annotation `@ExceptionHandler()`, interceptamos as exceções do tipo `MethodArgumentNotValidException` que é exatamente o mesmo que vimos no `trace` da resposta [anteriormente](#o-problema).
 
 Entendendo o código do método `handleValidationErrors(MethodArgumentNotValidException ex)`:
-1. Primeiro iteramos em `getFieldErrors()` então coletamos as mensagens de erro de `getDefaultMessage()` retornando uma lista com elas:
+1. Primeiro, iteramos em `getFieldErrors()` e, em seguida, coletamos as mensagens de erro usando `getDefaultMessage()` para retornar uma lista com elas:
 <CodeHeader title="GlobalExceptionHandler.java" />
 ```java 
 List<String> errors = ex.getBindingResult()
@@ -177,7 +177,9 @@ public ResponseEntity<Map<String, List<String>>> handleNotFoundException(NotFoun
   return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorsMap(errors));
 }
 ```
-As únicas diferenças do método do erro anterior é que trocamos a classe do `ExceptionHandler` para lidar com a nossa classe `NotFoundException`, e o jeito que coletamos a mensagem de erro. Dessa vez criamos uma lista que contém a mensagem de erro retornada com `List.of(ex.getMessage())`.
+As únicas diferenças para o método anterior são:
+- Trocamos o parâmetro classe do `ExceptionHandler` para agora lidar com a nossa classe `NotFoundException`.
+- Agora coletamos a mensagem de erro criando uma lista contendo o seu valor: `List.of(ex.getMessage())`.
 
 Não podemos esquecer de instanciar e retornar nossa classe sempre que um erro `404` pode ser disparado, como por exemplo o método `findById` do nosso `PersonService`:
 <CodeHeader title="PersonService.java" />
