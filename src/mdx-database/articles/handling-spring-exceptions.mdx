@@ -53,3 +53,31 @@ Esse tipo de resposta, além de confundir os usuários de nossa API, também exp
 
 >É importante destacar a parte `MethodArgumentNotValidException` que indica qual o tipo de erro que estamos recebendo. Precisaremos desta informação adiante.
 
+<TopicTitle title={"Filtro global de exceções"}/>
+O Spring nos provê um jeito nativo para tratar exceções de modo global, o **Controller Advice**.\
+Podemos usá-lo através da annotation `@RestControllerAdvice`.
+
+Para isso é ideal criarmos uma classe onde centralizaremos nossos métodos de tratamento de erro e dentro dela teremos um método que irá nos ajudar a **padronizar** as nossas respostas de erro:
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+  private Map<String, List<String>> errorsMap(List<String> errors) {
+    Map<String, List<String>> errorResponse = new HashMap<>();
+    errorResponse.put("errors", errors);
+    return errorResponse;
+  }
+
+}
+```
+O método `errorsMap` vai receber uma lista de `String` e retornar um `Map` que terá uma única chave `"errors"` com os valores da lista `errors`.\
+A representação em JSON é a seguinte:
+```JSON
+{
+  "errors": [
+    //lista de erros
+  ]
+}
+
+```
+
