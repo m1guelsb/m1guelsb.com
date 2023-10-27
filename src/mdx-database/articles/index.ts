@@ -31,7 +31,7 @@ export const articles: Article[] = [
       categories.find((c) => c.title === "Spring-boot")!,
       categories.find((c) => c.title === "Tutorial")!,
     ],
-    topics: ["A situação"],
+    topics: ["A situação", "O problema"],
     body: `handling-spring-exceptions.mdx`,
     createdAt: "2023-10-27",
     updatedAt: "2023-10-27",

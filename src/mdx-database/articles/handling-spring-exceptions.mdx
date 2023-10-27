@@ -37,3 +37,19 @@ public ResponseEntity<Person> create(@RequestBody @Valid @NotNull PersonDto dto)
 }
 ```
 
+<TopicTitle title={"O problema"}/>
+Quando enviamos uma requisição com valores inválidos, recebemos algo parecido com isso:
+```json
+{
+  "timestamp": "2023-10-27T00:03:21.577+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "trace": "org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.m1guelsb.springexceptions.entities.Person> com.m1guelsb.springexceptions.controllers.PersonController.create(com.m1guelsb.springexceptions.dtos.PersonDto) with 3 errors: [Field error in object 'personDto' on field 'email': rejected value [example]; codes [Email.personDto.email,Email.email,Email.java.lang.String,Email]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [...]"
+}
+```
+
+A única informação legível é que o erro que tivemos foi um `400 Bad request`, além disso temos `trace` e `message` com valores nem um pouco descritivos. Não sabemos quais foram os campos incorretos, nem quais valores devem ser enviados.\
+Esse tipo de resposta, além de confundir os usuários de nossa API, também expõem as tecnologias que nosso back-end está usando. Podemos considerar isso como uma brecha de segurança já que toda tecnologia contém falhas.
+
+>É importante destacar a parte `MethodArgumentNotValidException` que indica qual o tipo de erro que estamos recebendo. Precisaremos desta informação adiante.
+
