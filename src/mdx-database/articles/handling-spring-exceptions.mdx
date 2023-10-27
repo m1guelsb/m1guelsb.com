@@ -30,6 +30,7 @@ public class PersonDto {
 }
 ```
 Não podemos esquecer a annotation `@Valid` no body do nosso controller:
+<CodeHeader title="PersonController.java" />
 ```java
 @PostMapping
 public ResponseEntity<Person> create(@RequestBody @Valid @NotNull PersonDto dto) {
@@ -38,7 +39,9 @@ public ResponseEntity<Person> create(@RequestBody @Valid @NotNull PersonDto dto)
 ```
 
 <TopicTitle title={"O problema"}/>
-Quando enviamos uma requisição com valores inválidos, recebemos algo parecido com isso:
+Quando enviamos uma requisição para criação de um person com valores inválidos, recebemos algo parecido com isso:
+
+<CodeHeader title="POST REQUEST RESPONSE" />
 ```json
 {
   "timestamp": "2023-10-27T00:03:21.577+00:00",
@@ -48,7 +51,8 @@ Quando enviamos uma requisição com valores inválidos, recebemos algo parecido
 }
 ```
 
-A única informação legível é que o erro que tivemos foi um `400 Bad request`, além disso temos `trace` e `message` com valores nem um pouco descritivos. Não sabemos quais foram os campos incorretos, nem quais valores devem ser enviados.\
+A única informação legível é que o erro que tivemos foi um `400 Bad request`, além disso temos `trace` e `message` com valores nem um pouco descritivos. Não sabemos quais foram os campos incorretos, nem quais valores devem ser enviados.
+
 Esse tipo de resposta, além de confundir os usuários de nossa API, também expõem as tecnologias que nosso back-end está usando. Podemos considerar isso como uma brecha de segurança já que toda tecnologia contém falhas.
 
 >É importante destacar a parte `MethodArgumentNotValidException` que indica qual o tipo de erro que estamos recebendo. Precisaremos desta informação adiante.
@@ -58,6 +62,7 @@ O Spring nos provê um jeito nativo para tratar exceções de modo global, o **C
 Podemos usá-lo através da annotation `@RestControllerAdvice`.
 
 Para isso é ideal criarmos uma classe onde centralizaremos nossos métodos de tratamento de erro e dentro dela teremos um método que irá nos ajudar a **padronizar** as nossas respostas de erro:
+<CodeHeader title="GlobalExceptionHandler.java" />
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -78,11 +83,11 @@ A representação em JSON é a seguinte:
     //lista de erros
   ]
 }
-
 ```
 
 <TopicTitle title={"Receptando e tratando erros de validação"}/>
 Agora finalmente escrevemos o método que irá de fato interceptar os erros e retornar os valores do jeito que queremos:
+<CodeHeader title="GlobalExceptionHandler.java" />
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -110,6 +115,7 @@ Usando a annotation `@ExceptionHandler()`, nós interceptamos as exceções do t
 
 Entendendo o código do método `handleValidationErrors`:
 1. Primeiro iteramos em `getFieldErrors()` e coletamos as mensagens padrão com `getDefaultMessage()` e retornamos uma lista de String com elas:
+<CodeHeader title="GlobalExceptionHandler.java" />
 ```java 
 List<String> errors = ex.getBindingResult()
     .getFieldErrors()
@@ -118,11 +124,13 @@ List<String> errors = ex.getBindingResult()
     .collect(Collectors.toList());
 ```
 2. Então passamos nossa lista de erros para o `errorsMap` retornando dentro do `body` do `ResponseEntity` com o status de `BAD_REQUEST`:
-```java 
+<CodeHeader title="GlobalExceptionHandler.java" />
+```java
 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsMap(errors));
 ```
 
 Com isso, quando nosso client enviar dados **incorretos**:
+<CodeHeader title="POST REQUEST BODY" />
 ```JSON
 {
   "name": "Mi",
@@ -132,6 +140,7 @@ Com isso, quando nosso client enviar dados **incorretos**:
 ```
 
 Terá a linda e cheirosa **resposta**:
+<CodeHeader title="POST REQUEST RESPONSE" />
 ```JSON
 {
   "errors": [
