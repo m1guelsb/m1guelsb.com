@@ -81,3 +81,63 @@ A representação em JSON é a seguinte:
 
 ```
 
+<TopicTitle title={"Receptando e tratando erros de validação"}/>
+Agora finalmente escrevemos o método que irá de fato interceptar os erros e retornar os valores do jeito que queremos:
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
+
+    List<String> errors = ex.getBindingResult()
+        .getFieldErrors()
+        .stream()
+        .map(FieldError::getDefaultMessage)
+        .collect(Collectors.toList());
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsMap(errors));
+  }
+
+  private Map<String, List<String>> errorsMap(List<String> errors) {
+    Map<String, List<String>> errorResponse = new HashMap<>();
+    errorResponse.put("errors", errors);
+    return errorResponse;
+  }
+}
+```
+Usando a annotation `@ExceptionHandler()`, nós interceptamos as exceções do tipo `MethodArgumentNotValidException` que é exatamente o mesmo que vimos no `trace` da resposta [anteriormente](#o-problema).
+
+Entendendo o código do método `handleValidationErrors`:
+1. Primeiro iteramos em `getFieldErrors()` e coletamos as mensagens padrão com `getDefaultMessage()` e retornamos uma lista de String com elas:
+```java 
+List<String> errors = ex.getBindingResult()
+    .getFieldErrors()
+    .stream()
+    .map(FieldError::getDefaultMessage)
+    .collect(Collectors.toList());
+```
+2. Então passamos nossa lista de erros para o `errorsMap` retornando dentro do `body` do `ResponseEntity` com o status de `BAD_REQUEST`:
+```java 
+return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsMap(errors));
+```
+
+Com isso, quando nosso client enviar dados **incorretos**:
+```JSON
+{
+  "name": "Mi",
+  "email": "Invalid email",
+  "age": 0
+}
+```
+
+Terá a linda e cheirosa **resposta**:
+```JSON
+{
+  "errors": [
+    "title: Must be of 3 - 100 characters",
+    "age: Must be greater than 0",
+    "email: Invalid format"
+  ]
+}
+```
