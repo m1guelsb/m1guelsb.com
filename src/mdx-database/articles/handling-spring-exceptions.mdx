@@ -1,9 +1,12 @@
 Tratamento de erros, independente da linguagem, é sempre uma questão complicada. Mas quando se trata de Spring, existe um padrão recomendado e nativo para lidar com exceções sem muita dor de cabeça.
 
+>Este tutorial utiliza **Java 17** e **Spring boot 3.1.5**.\
+>[Código completo usado como exemplo](https://github.com/m1guelsb/spring-exceptions). 
+
 <TopicTitle title={"A situação"}/>
 Temos uma aplicação onde estamos usando a biblioteca de validação padrão do Spring:
 
-<CodeHeader title="pom.xml" />
+<h3 title="pom.xml" />
 ```xml 
 <dependency>
    <groupId>org.springframework.boot</groupId>
@@ -51,7 +54,7 @@ Quando enviamos uma requisição para criação de um person com valores inváli
 }
 ```
 
-A única informação legível é que o erro que tivemos foi um `400 Bad request`, além disso temos `trace` e `message` com valores nem um pouco descritivos. Não sabemos quais foram os campos incorretos, nem quais valores devem ser enviados.
+A única informação legível é que o erro que foi um `400 Bad request`, além disso temos `trace` e `message` com valores nem um pouco descritivos. Não sabemos quais foram os campos incorretos, nem quais valores devem ser enviados.
 
 Esse tipo de resposta, além de confundir os usuários de nossa API, também expõem as tecnologias que nosso back-end está usando. Podemos considerar isso como uma brecha de segurança já que toda tecnologia contém falhas.
 
@@ -75,7 +78,7 @@ public class GlobalExceptionHandler {
 
 }
 ```
-O método `errorsMap` vai receber uma lista de `String` e retornar um `Map` que terá uma única chave `"errors"` com os valores da lista `errors`.\
+O método `errorsMap` vai receber uma lista de `String` e retornar um `Map` que terá uma única chave contendo os valores da lista `errors`.\
 A representação em JSON é a seguinte:
 ```JSON
 {
@@ -150,3 +153,78 @@ Terá a linda e cheirosa **resposta**:
   ]
 }
 ```
+>Meus caros leitores, isso aqui é o **sonho** de todo dev front-end! 🥰
+
+<TopicTitle title={"Tratando outros tipos de erro"}/>
+Seguindo o mesmo modelo, podemos criar outros métodos que lidarão com outros tipos de erro.
+
+Outro erro muito comum de acontecer é o famoso `404 NOT_FOUND`, para trata-lo podemos criar um método estendendo `RuntimeException` que irá nos ajudar a enviar uma mensagem personalizada para cada caso de NOT_FOUND que tivermos:
+<CodeHeader title="NotFoundException.java" />
+```java
+public class NotFoundException extends RuntimeException {
+  public NotFoundException(String ex) {
+    super(ex);
+  }
+}
+```
+E então, no nosso `GlobalExceptionHandler` adicionamos o seguinte método:
+<CodeHeader title="GlobalExceptionHandler.java" />
+```java
+@ExceptionHandler(NotFoundException.class)
+public ResponseEntity<Map<String, List<String>>> handleNotFoundException(NotFoundException ex) {
+  List<String> errors = List.of(ex.getMessage());
+
+  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorsMap(errors));
+}
+```
+As únicas diferenças do método do erro anterior é que trocamos a classe do `ExceptionHandler` para lidar com a nossa classe `NotFoundException`, e o jeito que coletamos a mensagem de erro. Dessa vez criamos uma lista que contém a mensagem de erro retornada com `List.of(ex.getMessage())`.
+
+Não podemos esquecer de instanciar e retornar nossa classe sempre que um erro `404` pode ser disparado, como por exemplo o método `findById` do nosso `PersonService`:
+<CodeHeader title="PersonService.java" />
+```java
+public Person findById(Long id) throws NotFoundException {
+  return personRepository.findById(id)
+      .orElseThrow(() -> new NotFoundException("Person with id " + id + " not found"));
+}
+```
+Dessa forma, quando nosso client tentar acessar um Person que não existe, ele receberá a mensagem que inserimos ao instanciar a classe:
+<CodeHeader title="404 REQUEST RESPONSE" />
+```JSON
+{
+  "errors": [
+    "Person with id 999 not found"
+  ]
+}
+```
+
+E por último mas não menos importante, filtramos também os erros de gerais dos tipos `Exception` e `RuntimeException`:
+<CodeHeader title="GlobalExceptionHandler.java" />
+```java
+@ExceptionHandler(Exception.class)
+public final ResponseEntity<Map<String, List<String>>> handleGeneralExceptions(Exception ex) {
+  List<String> errors = List.of(ex.getMessage());
+
+  return ResponseEntity
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .body(errorsMap(errors));
+}
+
+@ExceptionHandler(RuntimeException.class)
+public final ResponseEntity<Map<String, List<String>>> handleRuntimeExceptions(RuntimeException ex) {
+  List<String> errors = List.of(ex.getMessage());
+
+  return ResponseEntity
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .body(errorsMap(errors));
+}
+```
+
+>Seguindo este padrão, podemos tratar qualquer tipo de erro e retornar sempre o mesmo padrão de mensagens. 🥳🎉
+
+---
+
+Por hoje é isso! 🤓\
+Acha que faltou alguma informação importante ou descobriu algum bug?\
+Sinta-se livre para me mandar uma mensagem no [Twitter/X](https://x.com/m1guelsb).
+
+Obrigado pela leitura! 💝

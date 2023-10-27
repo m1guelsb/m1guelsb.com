@@ -36,6 +36,7 @@ export const articles: Article[] = [
       "O problema",
       "Filtro global de exceções",
       "Receptando e tratando erros de validação",
+      "Tratando outros tipos de erro",
     ],
     body: `handling-spring-exceptions.mdx`,
     createdAt: "2023-10-27",
