@@ -98,8 +98,8 @@ public class GlobalExceptionHandler {
     List<String> errors = ex.getBindingResult()
         .getFieldErrors()
         .stream()
-        .map(FieldError::getDefaultMessage)
-        .collect(Collectors.toList());
+        .map(error -> error.getDefaultMessage())
+        .toList();
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsMap(errors));
   }
@@ -113,15 +113,15 @@ public class GlobalExceptionHandler {
 ```
 Usando a annotation `@ExceptionHandler()`, nós interceptamos as exceções do tipo `MethodArgumentNotValidException` que é exatamente o mesmo que vimos no `trace` da resposta [anteriormente](#o-problema).
 
-Entendendo o código do método `handleValidationErrors`:
-1. Primeiro iteramos em `getFieldErrors()` e coletamos as mensagens padrão com `getDefaultMessage()` e retornamos uma lista de String com elas:
+Entendendo o código do método `handleValidationErrors(MethodArgumentNotValidException ex)`:
+1. Primeiro iteramos em `getFieldErrors()` então coletamos as mensagens de erro de `getDefaultMessage()` retornando uma lista com elas:
 <CodeHeader title="GlobalExceptionHandler.java" />
 ```java 
 List<String> errors = ex.getBindingResult()
     .getFieldErrors()
     .stream()
-    .map(FieldError::getDefaultMessage)
-    .collect(Collectors.toList());
+    .map(error -> error.getDefaultMessage())
+    .toList();
 ```
 2. Então passamos nossa lista de erros para o `errorsMap` retornando dentro do `body` do `ResponseEntity` com o status de `BAD_REQUEST`:
 <CodeHeader title="GlobalExceptionHandler.java" />
