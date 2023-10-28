@@ -8,8 +8,8 @@ export const articles: Article[] = [
     brief:
       "Neste artigo revisamos as pegadinhas mais comuns do React, por que acontecem e como resolve-las. 🧐",
     categories: [
-      categories.find((c) => c.title === "Javascript")!,
-      categories.find((c) => c.title === "ReactJS")!,
+      categories.find(({ title }) => title === "Javascript")!,
+      categories.find(({ title }) => title === "ReactJS")!,
     ],
     topics: [
       "Propriedade style no JSX",
@@ -25,11 +25,11 @@ export const articles: Article[] = [
     id: 2,
     title: "Como tratar erros no spring boot",
     brief:
-      "Veremos o jeito mais fácil de lidar com erros no Spring-boot, retornando mensagens formatadas e claras para o client.",
+      "Neste tutorial veremos o jeito mais fácil de lidar com erros no Spring-boot retornando mensagens bonitas e claras para o usuário.🌹",
     categories: [
-      categories.find((c) => c.title === "Java")!,
-      categories.find((c) => c.title === "Spring-boot")!,
-      categories.find((c) => c.title === "Tutorial")!,
+      categories.find(({ title }) => title === "Java")!,
+      categories.find(({ title }) => title === "Spring-boot")!,
+      categories.find(({ title }) => title === "Tutorial")!,
     ],
     topics: [
       "A situação",
