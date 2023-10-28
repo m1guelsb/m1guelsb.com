@@ -33,6 +33,7 @@ export async function generateMetadata({
   return {
     title: article.title,
     description: article.brief,
+    keywords: article.categories.map(({ title }) => title),
     twitter: {
       creator: "m1guelsb",
       creatorId: "m1guelsb",
