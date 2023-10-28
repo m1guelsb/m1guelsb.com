@@ -37,13 +37,13 @@ export async function generateMetadata({
     twitter: {
       creator: "m1guelsb",
       creatorId: "m1guelsb",
-      images: ["/hero.png"],
+      images: [`/cover/${article.body}.png`],
       title: "m1guelsb",
       description: article?.brief,
     },
     openGraph: {
       url: "https://m1guelsb.com",
-      images: ["/hero.png"],
+      images: [`/cover/${article.body}.png`],
       title: article.title,
       description: article.brief,
       type: "article",

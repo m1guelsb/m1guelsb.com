@@ -5,7 +5,7 @@ interface ArticleBodyProps {
 }
 export const ArticleBody = ({ articlePath }: ArticleBodyProps) => {
   const Body = dynamic(
-    () => import(`../../../mdx-database/articles/${articlePath}`)
+    () => import(`../../../mdx-database/articles/${articlePath}.mdx`)
   );
 
   return (
