@@ -31,8 +31,24 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { article } = findArticleByTitle(params.article);
   return {
-    title: article?.title,
-    description: article?.brief,
+    title: article.title,
+    description: article.brief,
+    keywords: article.categories.map(({ title }) => title),
+    twitter: {
+      creator: "m1guelsb",
+      creatorId: "m1guelsb",
+      images: ["/hero.png"],
+      title: "m1guelsb",
+      description: article?.brief,
+    },
+    openGraph: {
+      url: "https://m1guelsb.com",
+      images: ["/hero.png"],
+      title: article.title,
+      description: article.brief,
+      type: "article",
+      tags: article.categories.map(({ title }) => title),
+    },
   };
 }
 

@@ -1,0 +1,232 @@
+Tratamento de erros, independente da linguagem, é sempre uma questão complicada. Mas quando se trata de Spring, existe um padrão recomendado e nativo para lidar com exceções sem muita dor de cabeça.
+
+>Este tutorial utiliza **Java 17** e **Spring boot 3.1.5**.\
+>[Código completo usado como exemplo](https://github.com/m1guelsb/spring-exceptions). 
+
+<TopicTitle title={"A situação"}/>
+Temos uma aplicação onde estamos usando a biblioteca de validação padrão do Spring:
+
+<h3 title="pom.xml" />
+```xml 
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+```
+E validamos os campos do [DTO](https://www.baeldung.com/java-dto-pattern "O que é DTO?") da entidade `Person`.
+<CodeHeader title="PersonDto.java" />
+```java
+@Data
+public class PersonDto {
+  @NotBlank(message = "name: Is required")
+  @Length(min = 3, max = 100, message = "title: Must be of 3 - 100 characters")
+  String name;
+
+  @NotBlank(message = "email: Is required")
+  @Email(message = "email: Invalid format")
+  String email;
+
+  @NotNull(message = "age: Is required")
+  @Min(value = 1, message = "age: Must be greater than 0")
+  @Max(value = 100, message = "age: Must be less than 100")
+  Integer age;
+}
+```
+Não podemos esquecer a annotation `@Valid` no body do nosso controller:
+<CodeHeader title="PersonController.java" />
+```java
+@PostMapping
+public ResponseEntity<Person> create(@RequestBody @Valid @NotNull PersonDto dto) {
+  return ResponseEntity.status(HttpStatus.CREATED).body(personService.create(dto));
+}
+```
+
+<TopicTitle title={"O problema"}/>
+Quando enviamos uma requisição para criação de um person com valores inválidos, recebemos algo parecido com isso:
+
+<CodeHeader title="POST REQUEST RESPONSE" />
+```json
+{
+  "timestamp": "2023-10-27T00:03:21.577+00:00",
+  "status": 400,
+  "error": "Bad Request",
+  "trace": "org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.m1guelsb.springexceptions.entities.Person> com.m1guelsb.springexceptions.controllers.PersonController.create(com.m1guelsb.springexceptions.dtos.PersonDto) with 3 errors: [Field error in object 'personDto' on field 'email': rejected value [example]; codes [Email.personDto.email,Email.email,Email.java.lang.String,Email]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [...]"
+}
+```
+
+A única informação legível é que o erro que foi um `400 Bad request`, além disso temos `trace` e `message` com valores nem um pouco descritivos. Não sabemos quais foram os campos incorretos, nem quais valores devem ser enviados.
+
+Isso não apenas confunde o usuário da API, mas também expõe a tecnologia que o back-end está usando. Podemos considerar isso uma brecha de segurança, pois toda tecnologia contém falhas.
+
+>É importante destacar a parte `MethodArgumentNotValidException` que indica qual o tipo de erro que estamos recebendo. Precisaremos desta informação adiante.
+
+<TopicTitle title={"Filtro global de exceções"}/>
+O Spring nos provê um jeito nativo para tratar exceções de modo global, o **Controller Advice**.\
+Podemos usá-lo através da annotation `@RestControllerAdvice`.
+
+Para isso é ideal criarmos uma classe onde centralizaremos nossos métodos de tratamento de erro e dentro dela teremos um método que irá nos ajudar a **padronizar** as nossas respostas de erro:
+<CodeHeader title="GlobalExceptionHandler.java" />
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+  private Map<String, List<String>> errorsMap(List<String> errors) {
+    Map<String, List<String>> errorResponse = new HashMap<>();
+    errorResponse.put("errors", errors);
+    return errorResponse;
+  }
+
+}
+```
+O método `errorsMap` vai receber uma lista de `String` e retornar um `Map` que terá uma única chave contendo os valores da lista `errors`.\
+A representação em JSON é a seguinte:
+```JSON
+{
+  "errors": [
+    //lista de erros
+  ]
+}
+```
+
+<TopicTitle title={"Receptando e tratando erros de validação"}/>
+Agora finalmente escrevemos o método que irá de fato interceptar os erros e retornar os valores do jeito que queremos:
+<CodeHeader title="GlobalExceptionHandler.java" />
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
+
+    List<String> errors = ex.getBindingResult()
+        .getFieldErrors()
+        .stream()
+        .map(error -> error.getDefaultMessage())
+        .toList();
+
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsMap(errors));
+  }
+
+  private Map<String, List<String>> errorsMap(List<String> errors) {
+    Map<String, List<String>> errorResponse = new HashMap<>();
+    errorResponse.put("errors", errors);
+    return errorResponse;
+  }
+}
+```
+Usando a annotation `@ExceptionHandler()`, interceptamos as exceções do tipo `MethodArgumentNotValidException` que é exatamente o mesmo que vimos no `trace` da resposta [anteriormente](#o-problema).
+
+Entendendo o código do método `handleValidationErrors(MethodArgumentNotValidException ex)`:
+1. Primeiro, iteramos em `getFieldErrors()` e, em seguida, coletamos as mensagens de erro usando `getDefaultMessage()` para retornar uma lista com elas:
+<CodeHeader title="GlobalExceptionHandler.java" />
+```java 
+List<String> errors = ex.getBindingResult()
+    .getFieldErrors()
+    .stream()
+    .map(error -> error.getDefaultMessage())
+    .toList();
+```
+2. Então passamos nossa lista de erros para o `errorsMap` retornando dentro do `body` do `ResponseEntity` com o status de `BAD_REQUEST`:
+<CodeHeader title="GlobalExceptionHandler.java" />
+```java
+return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsMap(errors));
+```
+
+Com isso, quando nosso client enviar dados **incorretos**:
+<CodeHeader title="POST REQUEST BODY" />
+```JSON
+{
+  "name": "Mi",
+  "email": "Invalid email",
+  "age": 0
+}
+```
+
+Terá a linda e cheirosa **resposta**:
+<CodeHeader title="POST REQUEST RESPONSE" />
+```JSON
+{
+  "errors": [
+    "title: Must be of 3 - 100 characters",
+    "age: Must be greater than 0",
+    "email: Invalid format"
+  ]
+}
+```
+>Meus caros leitores, isso aqui é o **sonho** de todo dev front-end! 🥰
+
+<TopicTitle title={"Tratando outros tipos de erro"}/>
+Seguindo o mesmo modelo, podemos criar outros métodos que lidarão com outros tipos de erro.
+
+Outro erro muito comum de acontecer é o famoso `404 NOT_FOUND`, para trata-lo podemos criar um método estendendo `RuntimeException` que irá nos ajudar a enviar uma mensagem personalizada para cada caso de NOT_FOUND que tivermos:
+<CodeHeader title="NotFoundException.java" />
+```java
+public class NotFoundException extends RuntimeException {
+  public NotFoundException(String ex) {
+    super(ex);
+  }
+}
+```
+E então, no nosso `GlobalExceptionHandler` adicionamos o seguinte método:
+<CodeHeader title="GlobalExceptionHandler.java" />
+```java
+@ExceptionHandler(NotFoundException.class)
+public ResponseEntity<Map<String, List<String>>> handleNotFoundException(NotFoundException ex) {
+  List<String> errors = List.of(ex.getMessage());
+
+  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorsMap(errors));
+}
+```
+As únicas diferenças para o método anterior são:
+- Trocamos o parâmetro classe do `ExceptionHandler` para agora lidar com a nossa classe `NotFoundException`.
+- Agora coletamos a mensagem de erro criando uma lista contendo o seu valor: `List.of(ex.getMessage())`.
+
+Não podemos esquecer de instanciar e retornar nossa classe sempre que um erro `404` pode ser disparado, como por exemplo o método `findById` do nosso `PersonService`:
+<CodeHeader title="PersonService.java" />
+```java
+public Person findById(Long id) throws NotFoundException {
+  return personRepository.findById(id)
+      .orElseThrow(() -> new NotFoundException("Person with id " + id + " not found"));
+}
+```
+Dessa forma, quando nosso client tentar acessar um Person que não existe, ele receberá a mensagem que inserimos ao instanciar a classe:
+<CodeHeader title="404 REQUEST RESPONSE" />
+```JSON
+{
+  "errors": [
+    "Person with id 999 not found"
+  ]
+}
+```
+
+E por último mas não menos importante, filtramos também os erros de gerais dos tipos `Exception` e `RuntimeException`:
+<CodeHeader title="GlobalExceptionHandler.java" />
+```java
+@ExceptionHandler(Exception.class)
+public final ResponseEntity<Map<String, List<String>>> handleGeneralExceptions(Exception ex) {
+  List<String> errors = List.of(ex.getMessage());
+
+  return ResponseEntity
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .body(errorsMap(errors));
+}
+
+@ExceptionHandler(RuntimeException.class)
+public final ResponseEntity<Map<String, List<String>>> handleRuntimeExceptions(RuntimeException ex) {
+  List<String> errors = List.of(ex.getMessage());
+
+  return ResponseEntity
+      .status(HttpStatus.INTERNAL_SERVER_ERROR)
+      .body(errorsMap(errors));
+}
+```
+
+>Seguindo este padrão, podemos tratar qualquer tipo de erro e retornar sempre o mesmo padrão de mensagens. 🥳🎉
+
+---
+
+Por hoje é isso! 🤓\
+Acha que faltou alguma informação importante ou descobriu algum bug?\
+Sinta-se livre para me mandar uma mensagem no [Twitter/X](https://x.com/m1guelsb).
+
+Obrigado pela leitura! 💝
