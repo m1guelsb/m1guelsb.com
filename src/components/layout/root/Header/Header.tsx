@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Logo from "@/assets/logo.svg";
 import { Nav } from "../Nav/Nav";
 import Link from "next/link";
 
@@ -12,9 +11,10 @@ export const Header = () => {
             priority
             style={{ userSelect: "none" }}
             draggable={false}
-            src={Logo}
+            src={"/logo.svg"}
             alt="m1guelsb-logo"
             height={40}
+            width={146}
           />
         </button>
       </Link>

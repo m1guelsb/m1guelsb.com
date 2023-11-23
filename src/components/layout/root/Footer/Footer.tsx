@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Logo from "@/assets/logo.svg";
 
 export const Footer = () => {
   return (
@@ -9,9 +8,10 @@ export const Footer = () => {
         priority
         style={{ userSelect: "none" }}
         draggable={false}
-        src={Logo}
+        src={"/logo.svg"}
         alt="m1guelsb-logo"
         height={40}
+        width={146}
       />
     </footer>
   );

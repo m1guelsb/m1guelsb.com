@@ -72,7 +72,7 @@ const contacts = [
   },
   {
     Icon: LinkedInLogoIcon,
-    href: "https://www.linkedin.com/in/miguel-s-barbosa/",
+    href: "https://www.linkedin.com/in/m1guelsb",
   },
   {
     Icon: TwitterLogoIcon,
