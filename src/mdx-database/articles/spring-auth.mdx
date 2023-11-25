@@ -1,0 +1,386 @@
+In the vast world of web development, authentication is the guardian of every digital realm. In this tutorial we'll see how to protect, authenticate and authorize the users of a Spring-Boot application in a native way and following the good practices of the framework.
+
+We'll be using the following technologies:
+- Java 17
+- Spring-boot 3.1.5
+- jwt
+- hibernate/jpa
+- postgresql
+- lombok
+
+>[Source code used in this tutorial](https://github.com/m1guelsb/spring-auth). 
+
+
+<TopicTitle title={"First steps"}/>
+To protect our application we'll need two dependencies in our `pom.xml`, the first is the native spring security package, the other one will help us to create and validate our jwt tokens.
+
+<CodeHeader title="pom.xml" />
+```xml
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+
+<dependency>
+   <groupId>com.auth0</groupId>
+   <artifactId>java-jwt</artifactId>
+   <version>4.4.0</version>
+</dependency>
+```
+
+
+<TopicTitle title={"User entity and repository"} />
+First we'll need a enum to represent the user roles, this will help us to define the permissions of each user in our application.
+
+<CodeHeader title="/enums/UserRole.java" />
+```java
+public enum UserRole {
+  ADMIN("admin"),
+  USER("user");
+
+  private String role;
+
+  UserRole(String role) {
+    this.role = role;
+  }
+
+  public String getValue() {
+    return role;
+  }
+}
+```
+In the enum we have two representative roles: `ADMIN` and `USER`, the `ADMIN` role will have access to all the endpoints of our application, while the `USER` role will only have access to specific endpoints.
+
+The user entity will be the core of our authentication system, it will hold the user's credentials and the roles that the user has. We'll be implementing the `UserDetails` interface to represent our user entity, this interface is provided by the spring security package and it's the recommended way to represent the user entity in a spring-boot application.
+
+<CodeHeader title="/entities/UserEntity.java" />
+```java
+@Table()
+@Entity(name = "users")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
+public class User implements UserDetails {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  private String login;
+
+  private String password;
+
+  @Enumerated(EnumType.STRING)
+  private UserRole role;
+
+  public User(String login, String password, UserRole role) {
+    this.login = login;
+    this.password = password;
+    this.role = role;
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    if (this.role == UserRole.ADMIN) {
+      return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+    }
+    return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+  }
+
+  @Override
+  public String getUsername() {
+    return login;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
+}
+```
+
+It has a lot of methods that we can override to customize the authentication process, you can implement those properties in the database too but for now we'll only use the required to make our authentication system work: `id`, `username`, `password` and `role`.
+
+For the user repository we have the following code:
+<CodeHeader title="/repositories/UserRepository.java" />
+```java
+public interface UserRepository extends JpaRepository<User, Long> {
+  UserDetails findByLogin(String login);
+}
+```
+Extending the `JpaRepository` we'll have access to a lot of methods to manipulate our users in the database. In addition, the `findByLogin` method will be used by the spring security to find the user in the database and validate the credentials.
+
+<TopicTitle title={"Token provider"} />
+We need to define a secret key to sign our tokens, this key will be used to validate and to generate the token signature. We'll be using the `@Value` annotation to get the secret key from the `application.yml` file. And in the `application.yml` file we'll define the secret key as an environment variable, this will help us to keep the secret key safe and out of the source code.
+<CodeHeader title=".env" />
+```env
+JWT_SECRET="yoursecret"
+```
+In our `application.yml`:
+<CodeHeader title="/resources/application.yml" />
+```yml
+security:
+  jwt:
+    token:
+      secret-key: ${JWT_SECRET}
+```
+To the spring-boot application read the environment variables we need declare the `PropertySource` annotation in our main class indicating where is the `.env` file located. In our case it's located in the root of the project, so we'll use the `user.dir` variable to get the project root path. The main class will look like this`:
+<CodeHeader title="SpringAuthApplication.java" />
+```java
+@SpringBootApplication
+@PropertySource("file:${user.dir}/.env")
+public class SpringAuthApplication {
+	public static void main(String[] args) {
+		SpringApplication.run(SpringAuthApplication.class, args);
+	}
+}
+```
+
+Finally we can define our token provider class, this class will be responsible to generate and validate our tokens.
+<CodeHeader title="/config/auth/TokenProvider.java" />
+```java
+@Service
+public class TokenProvider {
+  @Value("${security.jwt.token.secret-key}")
+  private String JWT_SECRET;
+
+  public String generateAccessToken(User user) {
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+      return JWT.create()
+          .withSubject(user.getUsername())
+          .withClaim("username", user.getUsername())
+          .withExpiresAt(genAccessExpirationDate())
+          .sign(algorithm);
+    } catch (JWTCreationException exception) {
+      throw new JWTCreationException("Error while generating token", exception);
+    }
+  }
+
+  public String validateToken(String token) {
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+      return JWT.require(algorithm)
+          .build()
+          .verify(token)
+          .getSubject();
+    } catch (JWTVerificationException exception) {
+      throw new JWTVerificationException("Error while validating token", exception);
+    }
+  }
+
+  private Instant genAccessExpirationDate() {
+    return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+  }
+}
+```
+In the `generateAccessToken` we define an algorithm to sign our token, the subject of the token and the expiration date and return a new token. In the `validateToken` method we validate the token signature and return the subject of the token.
+
+<TopicTitle title={"Security filter"} />
+Then we need to define a filter to intercept the requests and validate the token. We'll be extending the `OncePerRequestFilter` spring security class to intercept the requests and validate the token.
+
+<CodeHeader title="/config/auth/SecurityFilter.java" />
+```java
+@Component
+public class SecurityFilter extends OncePerRequestFilter {
+  @Autowired
+  TokenProvider tokenService;
+  @Autowired
+  UserRepository userRepository;
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
+    var token = this.recoverToken(request);
+    if (token != null) {
+      var login = tokenService.validateToken(token);
+      var user = userRepository.findByLogin(login);
+      var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+    filterChain.doFilter(request, response);
+  }
+
+  private String recoverToken(HttpServletRequest request) {
+    var authHeader = request.getHeader("Authorization");
+    if (authHeader == null)
+      return null;
+    return authHeader.replace("Bearer ", "");
+  }
+}
+```
+In the `doFilterInternal` method we recover the token from the request, remove the "Bearer" from the string using the `recoverToken` helper method, validate the token and set the authentication in the `SecurityContextHolder`. The `SecurityContextHolder` is a spring security class that holds the authentication of the current request, so we can access the user information in the controllers.
+
+<TopicTitle title={"Auth configuration"} />
+Here we need to define some more necessary methods to make our authentication system work. First we define at the top we have the `Configuration` and `@EnableWebSecurity` annotation to enable the web security in our application. Then we define the `SecurityFilterChain` bean to define the endpoints that will be protected by our authentication system.
+<CodeHeader title="/config/AuthConfig.java" />
+```java
+@Configuration
+@EnableWebSecurity
+public class AuthConfig {
+  @Autowired
+  SecurityFilter securityFilter;
+
+  @Bean
+  SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    return httpSecurity
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers(HttpMethod.POST, "/api/v1/auth/*").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/v1/books").hasRole("ADMIN")
+            .anyRequest().authenticated())
+        .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
+  }
+
+  @Bean
+  AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+      throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
+  }
+
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+}
+```
+In the `authorizeHttpRequests` method we define the endpoints that will be protected and the roles that will have access to each endpoint. In our case the `/api/v1/auth/*` endpoints will be public, the `/api/v1/books` endpoint will be protected and only the users with the `ADMIN` role will have access to it. The others endpoints will be protected and only the authenticated users will have access to it. 
+
+In the `addFilterBefore` method we define the filter that we created before. And finally we define the `AuthenticationManager` and the `PasswordEncoder` beans that is necessary to make the authentication system work.
+
+<TopicTitle title={"Auth DTOs"} />
+We'll need two DTOs to receive the user credentials, and another DTO to return the token when the user sign in.
+<CodeHeader title="/dtos/SignUpDto.java" />
+```java
+public record SignUpDto(
+    String login,
+    String password,
+    UserRole role) {
+}
+``` 
+<CodeHeader title="/dtos/SignInDto.java" />
+```java
+public record SignInDto(
+    String login,
+    String password) {
+}
+```
+<CodeHeader title="/dtos/JwtDto.java" />
+```java
+public record JwtDto(
+    String accessToken) {
+}
+``` 
+
+<TopicTitle title={"Auth service"} />
+Here we define the service implementing `UserDetailsService` that will be responsible to create the users and save them in the database or load the user information by the username.
+<CodeHeader title="/services/AuthService.java" />
+```java
+@Service
+public class AuthService implements UserDetailsService {
+
+  @Autowired
+  UserRepository repository;
+
+  @Override
+  public UserDetails loadUserByUsername(String username) {
+    var user = repository.findByLogin(username);
+    return user;
+  }
+
+  public UserDetails signUp(SignUpDto data) throws InvalidJwtException {
+    if (repository.findByLogin(data.login()) != null) {
+      throw new InvalidJwtException("Username already exists");
+    }
+    String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+    User newUser = new User(data.login(), encryptedPassword, data.role());
+    return repository.save(newUser);
+  }
+}
+```
+In the `signUp` method we check if the username is already registered then encrypt the password using the `BCryptPasswordEncoder` and save the user information.
+
+<TopicTitle title={"Auth controller"} />
+And finally we define the auth controller. It will be responsible to receive the request, authenticate the users and generate the tokens.
+<CodeHeader title="/controllers/AuthController.java" />
+```java
+@RestController
+@RequestMapping("/api/v1/auth")
+public class AuthController {
+  @Autowired
+  private AuthenticationManager authenticationManager;
+  @Autowired
+  private AuthService service;
+  @Autowired
+  private TokenProvider tokenService;
+
+  @PostMapping("/signup")
+  public ResponseEntity<?> signUp(@RequestBody @Valid SignUpDto data) {
+    service.signUp(data);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
+  @PostMapping("/signin")
+  public ResponseEntity<JwtDto> signIn(@RequestBody @Valid SignInDto data) {
+    var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+    var authUser = authenticationManager.authenticate(usernamePassword);
+    var accessToken = tokenService.generateAccessToken((User) authUser.getPrincipal());
+    return ResponseEntity.ok(new JwtDto(accessToken));
+  }
+}
+```
+In the `signUp` method we receive the user data, create a new user and save it in the database. In the `signIn` method we receive the user credentials, authenticate the user using the `AuthenticationManager`, and generate the token.
+
+<TopicTitle title={"Testing the authentication"} />
+To create a new user we send a `POST` request to the `/api/v1/auth/signup` endpoint with a body containing the login, password and one of the roles available (USER or ADMIN):
+```json
+{
+  "login": "myusername",
+  "password": "123456",
+  "role": "USER"
+}
+```
+To retrieve an authentication token we send a `POST` request with this user login and password to the `/api/v1/auth/signin` endpoint.
+
+To test our authentication system we'll create a simple book controller with two endpoints, one to create a new book and another one to list all the books.
+```java
+@RestController
+@RequestMapping("/api/v1/books")
+public class BookController {
+
+  @GetMapping
+  public ResponseEntity<List<String>> findAll() {
+    return ResponseEntity.ok(List.of("Book1", "Book2", "Book3"));
+  }
+
+  @PostMapping
+  public ResponseEntity<String> create(@RequestBody String data) {
+    return ResponseEntity.ok(data);
+  }
+} 
+```
+In the `/api/v1/books` endpoint the `GET` method will be available for the users with `USER` role, and the `POST` method will be protected and only the users with the `ADMIN` role will be able to create a book.
+
+---
+
+Phew! That was a lot of information and coding, but I hope you enjoyed it and learned something new! If you have any questions or suggestions, feel free to send me a message on [Twitter/X](https://x.com/m1guelsb).
+
+Thanks for reading!
