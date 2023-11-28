@@ -46,7 +46,7 @@ export const articles: Article[] = [
     id: 3,
     title: "Autenticação e autorização no Spring-Boot",
     brief:
-      "Neste tutorial veremos o jeito mais fácil de lidar com erros no Spring-boot retornando mensagens bonitas e claras para o usuário.🌹",
+      "Veremos a maneira mais simples de implementar autenticação e autorização no Spring-boot seguindo as boas práticas para proteger nossas aplicações. 🔐",
     categories: [
       categories.find(({ title }) => title === "Java")!,
       categories.find(({ title }) => title === "Spring-boot")!,
@@ -57,14 +57,14 @@ export const articles: Article[] = [
       "Entidade e repositório do usuário",
       "Token provider",
       "Security filter",
-      "Auth configuration",
+      "Auth config",
       "Auth DTOs",
       "Auth service",
       "Auth controller",
       "Testando a autenticação",
     ],
     body: `spring-auth`,
-    createdAt: "2023-11-22",
-    updatedAt: "2023-11-22",
+    createdAt: "2023-11-25",
+    updatedAt: "2023-11-25",
   },
 ];
