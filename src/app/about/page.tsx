@@ -19,11 +19,10 @@ export default async function About() {
         <div className="flex flex-col gap-8">
           <h1>Miguel Silva Barbosa</h1>
           <p>
-            Desenvolvedor full stack com 2 anos de experiência. Autodidata
+            Desenvolvedor fullstack com 3 anos de experiência. Autodidata
             apaixonado por tecnologia, design e games.
             <br />
-            Sempre em busca de novas experiências e desafios! No momento
-            expandindo conhecimentos de Clean Architecture, TDD, DDD e CI/CD.
+            No momento expandindo conhecimentos de Clean Architecture, TDD, DDD e CI/CD.
           </p>
         </div>
 

@@ -11,12 +11,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-bt">
+    <html lang="pt-bt" className="h-screen">
       <body
-        className={`${inter.className} max-w-5xl px-4 mx-auto bg-background1 text-text1`}
+        className={`${inter.className} min-h-screen flex flex-col max-w-6xl px-4 tablet:px-0 mx-auto bg-background1 text-text1`}
       >
         <Header />
-        <main className="mb-20 tablet:mb-0">{children}</main>
+        <main className="flex-1 mb-20 tablet:mb-0">{children}</main>
         <Footer />
         <MobileNav />
       </body>

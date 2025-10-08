@@ -9,13 +9,13 @@ export const HeroSection = () => {
       role="presentation"
       className="h-[31rem] w-full flex justify-between items-center"
     >
-      <div className="w-[26rem] flex flex-col gap-4">
-        <div className="flex flex-col">
+      <div className="w-[30rem] flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
           <h1>
             Eu sou <b className="text-accent">Miguel</b> {":)"}
           </h1>
           <p className="text-lg">
-            Desenvolvedor Fullstack e Designer nas horas vagas.
+            Desenvolvedor Fullstack sempre em busca de novos desafios para transformar ideias em código e bugs em aprendizado.
           </p>
         </div>
         <div className="flex gap-[1rem]">
@@ -26,7 +26,7 @@ export const HeroSection = () => {
           </Link>
 
           <Link
-            href={"https://www.linkedin.com/in/miguel-s-barbosa"}
+            href={"https://www.linkedin.com/in/m1guelsb"}
             target="_blank"
           >
             <Button variant={"outline"} size={"icon"}>

@@ -8,7 +8,7 @@ interface TopicTitleProps {
 export const TopicTitle = ({ title }: TopicTitleProps) => {
   return (
     <h2
-      className="flex gap-2 items-center group relative"
+      className="flex gap-2 items-center group relative mb-2 mt-18"
       id={parseTitleHref(title)}
     >
       <span className="absolute left-[-2rem] child hidden group-hover:block bg-background3 p-1 rounded-md">
