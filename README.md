@@ -4,7 +4,7 @@
   </a>
 </p>
 <p align="center">
-  <img alt="Next" src="https://img.shields.io/badge/Typescript-black?style=for-the-badge&logo=typescript&logoColor=blue"/>
+  <img alt="Typescript" src="https://img.shields.io/badge/Typescript-black?style=for-the-badge&logo=typescript&logoColor=blue"/>
 
   <img alt="Next" src="https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white"/>
 
@@ -16,15 +16,21 @@
 </p>
 
 ## About 🔎
+
 My personal blog and portfolio. Writing about front-end, back-end, design and technology in general.
 
 ---
+
 ## Articles List 📝
+
 - [React Beginner Mistakes](https://m1guelsb.com/blog/erros-comuns-de-iniciantes-em-reactjs)
 - [How to handle Spring boot exceptions](https://m1guelsb.com/blog/como-tratar-erros-no-spring-boot)
+- [Authentication and Authorization in Spring boot](https://m1guelsb.com/blog/autentica--o-e-autoriza--o-no-spring-boot)
 
 ---
+
 ## Tech Stack 🔧
+
 <p>
   <img title="Typescript" src="https://skillicons.dev/icons?i=ts" height="48" />
   <img title="ReactJS" src="https://skillicons.dev/icons?i=react" height="48" />
@@ -33,7 +39,9 @@ My personal blog and portfolio. Writing about front-end, back-end, design and te
 </p>
 
 ---
+
 ## How to run 🏃
+
 ```
 npm i
 npm run dev
