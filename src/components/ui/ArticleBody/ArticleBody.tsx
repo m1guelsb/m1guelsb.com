@@ -9,7 +9,7 @@ export const ArticleBody = ({ articlePath }: ArticleBodyProps) => {
   );
 
   return (
-    <article className="article-body">
+    <article className="article-body mt-[-1.5rem]">
       <Body />
     </article>
   );

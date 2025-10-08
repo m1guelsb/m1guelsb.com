@@ -18,14 +18,14 @@ export const ArticleCard = ({
     <Link href={`/blog/${hrefTitle}`} role="link">
       <button
         role="listitem"
-        className="h-[19rem] w-full p-[1.25rem] text-left flex flex-col gap-[0.75rem] rounded-[1rem] bg-background2"
+        className="h-[19rem] w-full p-[1.25rem] text-left flex flex-col gap-[0.75rem] rounded-[1rem] bg-background2 transition-colors hover:bg-background3"
       >
         <h2>{title}</h2>
 
-        <div className="flex gap-x-3 gap-y-2 flex-wrap">
+        <div className="flex gap-x-2 gap-y-2 flex-wrap">
           {categories.map(({ id, title }) => (
             <span
-              className={buttonVariants({ size: "small", variant: "outline" })}
+              className="px-2 p-1 text-sm border border-accent rounded-md bg-background2"
               key={id}
             >
               {title}
@@ -33,7 +33,7 @@ export const ArticleCard = ({
           ))}
         </div>
 
-        <p className="h-full w-full overflow-hidden text-ellipsis line-clamp-5">
+        <p className="h-full w-full overflow-x-hidden overflow-y-auto text-ellipsis line-clamp-5">
           {brief}
         </p>
 
